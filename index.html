@@ -1,0 +1,4313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NottinghamStartups.com - The Central Hub for Nottingham's Startup Ecosystem</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Light Mode Colors */
+            --primary-color-light: #ffffff;
+            --secondary-color-light: #0066ff;
+            --accent-color-light: #00ffc8;
+            --text-primary-light: #1a1a1a;
+            --text-secondary-light: #666666;
+            --background-light: #f8f9fa;
+            --card-bg-light: #ffffff;
+            --card-border-light: #e0e0e0;
+            --navbar-bg-light: rgba(255, 255, 255, 0.95);
+            --gradient-1-light: linear-gradient(135deg, #0066ff, #00ffc8);
+            --gradient-2-light: linear-gradient(135deg, #00ffc8, #ff6b35);
+            
+            /* Dark Mode Colors */
+            --primary-color-dark: #0a0a0a;
+            --secondary-color-dark: #00ffc8;
+            --accent-color-dark: #0066ff;
+            --text-primary-dark: #ffffff;
+            --text-secondary-dark: #b8b8b8;
+            --background-dark: #0a0a0a;
+            --card-bg-dark: rgba(255, 255, 255, 0.05);
+            --card-border-dark: rgba(255, 255, 255, 0.1);
+            --navbar-bg-dark: rgba(10, 10, 10, 0.85);
+            --gradient-1-dark: linear-gradient(135deg, #00ffc8, #0066ff);
+            --gradient-2-dark: linear-gradient(135deg, #0066ff, #ff6b35);
+            
+            /* Default to light mode */
+            --primary-color: var(--primary-color-light);
+            --secondary-color: var(--secondary-color-light);
+            --accent-color: var(--accent-color-light);
+            --text-primary: var(--text-primary-light);
+            --text-secondary: var(--text-secondary-light);
+            --background: var(--background-light);
+            --card-bg: var(--card-bg-light);
+            --card-border: var(--card-border-light);
+            --navbar-bg: var(--navbar-bg-light);
+            --gradient-1: var(--gradient-1-light);
+            --gradient-2: var(--gradient-2-light);
+        }
+        [data-theme="dark"] {
+            --primary-color: var(--primary-color-dark);
+            --secondary-color: var(--secondary-color-dark);
+            --accent-color: var(--accent-color-dark);
+            --text-primary: var(--text-primary-dark);
+            --text-secondary: var(--text-secondary-dark);
+            --background: var(--background-dark);
+            --card-bg: var(--card-bg-dark);
+            --card-border: var(--card-border-dark);
+            --navbar-bg: var(--navbar-bg-dark);
+            --gradient-1: var(--gradient-1-dark);
+            --gradient-2: var(--gradient-2-dark);
+        }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background);
+            color: var(--text-primary);
+            overflow-x: hidden;
+            line-height: 1.6;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        #three-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
+        /* Theme Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .theme-toggle:hover {
+            transform: scale(1.1);
+        }
+        .theme-toggle i {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+        /* Background Settings Toggle */
+        .bg-settings-toggle {
+            position: fixed;
+            top: 160px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        .bg-settings-toggle:hover {
+            transform: scale(1.1);
+        }
+        .bg-settings-toggle i {
+            font-size: 1.5rem;
+            color: var(--secondary-color);
+        }
+        /* Background Settings Panel */
+        .bg-settings-panel {
+            position: fixed;
+            top: 220px;
+            right: 20px;
+            z-index: 1001;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            padding: 15px;
+            width: 250px;
+            backdrop-filter: blur(10px);
+            display: none;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+        .bg-settings-panel.active {
+            display: block;
+        }
+        .settings-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--secondary-color);
+        }
+        .setting-item {
+            margin-bottom: 15px;
+        }
+        .setting-label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .setting-slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: var(--card-border);
+            outline: none;
+            -webkit-appearance: none;
+        }
+        .setting-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            cursor: pointer;
+        }
+        .setting-slider::-moz-range-thumb {
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: var(--secondary-color);
+            cursor: pointer;
+        }
+        .setting-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .setting-checkbox input {
+            width: 18px;
+            height: 18px;
+            accent-color: var(--secondary-color);
+        }
+        /* Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: var(--navbar-bg);
+            backdrop-filter: blur(15px);
+            z-index: 1000;
+            padding: 1rem 2rem;
+            transition: all 0.4s ease;
+            border-bottom: 1px solid var(--card-border);
+        }
+        .navbar.scrolled {
+            box-shadow: 0 5px 20px rgba(0, 102, 255, 0.15);
+            padding: 0.7rem 2rem;
+        }
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .logo i {
+            color: var(--secondary-color);
+            -webkit-text-fill-color: initial;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+        .nav-links a {
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            position: relative;
+            padding: 0.5rem 0;
+        }
+        .nav-links a:hover {
+            color: var(--secondary-color);
+        }
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-1);
+            transition: width 0.3s ease;
+        }
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        .nav-cta {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            padding: 0.6rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        .nav-cta:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.3);
+        }
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+        }
+        .mobile-menu span {
+            width: 25px;
+            height: 3px;
+            background: var(--secondary-color);
+            transition: 0.3s;
+        }
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            position: relative;
+            padding: 0 2rem;
+        }
+        .hero-content {
+            max-width: 900px;
+            z-index: 10;
+            animation: fadeInUp 1s ease;
+        }
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 1.5rem;
+            background: var(--gradient-2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+        .hero p {
+            font-size: 1.3rem;
+            margin-bottom: 2.5rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .cta-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 1rem 2.5rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+            position: relative;
+            overflow: hidden;
+            display: inline-block;
+        }
+        .btn-primary {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+        }
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            border: 2px solid var(--secondary-color);
+        }
+        .btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 102, 255, 0.3);
+        }
+        /* Newsletter Signup */
+        .newsletter {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin: 2rem auto;
+            max-width: 600px;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            backdrop-filter: blur(10px);
+        }
+        .newsletter h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        .newsletter p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+        .newsletter-form {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .newsletter-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .newsletter-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2);
+        }
+        /* Sections */
+        .section {
+            padding: 4rem 2rem;
+            position: relative;
+            z-index: 10;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .section-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        .feature-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--card-border);
+            transition: all 0.4s ease;
+            cursor: pointer;
+            height: 100%;
+        }
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
+        }
+        .feature-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: block;
+        }
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+        /* Success Stories Section */
+        .success-stories {
+            margin: 2rem 0;
+        }
+        .stories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        .story-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+        .story-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
+        }
+        .story-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .founder-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--secondary-color);
+        }
+        .founder-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+        .founder-info p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .story-quote {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-style: italic;
+            line-height: 1.6;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+        .story-quote::before {
+            content: '"';
+            position: absolute;
+            left: 0;
+            top: 0;
+            font-size: 3rem;
+            color: var(--secondary-color);
+            opacity: 0.5;
+            line-height: 1;
+        }
+        .story-metrics {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--card-border);
+        }
+        .story-metric {
+            text-align: center;
+        }
+        .story-metric-value {
+            font-weight: 700;
+            color: var(--secondary-color);
+            display: block;
+            font-size: 1.1rem;
+        }
+        .story-metric-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        /* Startup Directory */
+        .startup-directory {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .directory-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .view-options {
+            display: flex;
+            gap: 0.5rem;
+        }
+        .view-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .view-btn.active {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            border-color: transparent;
+        }
+        .view-btn:hover:not(.active) {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        .sort-options {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .search-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .search-input {
+            flex: 1;
+            min-width: 250px;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .search-input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2);
+        }
+        .filter-select {
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            color: var(--text-primary);
+            min-width: 180px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2);
+        }
+        .search-btn {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            border: none;
+            border-radius: 50px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .search-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.3);
+        }
+        .startup-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        .startup-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+            transition: all 0.4s ease;
+            height: 100%;
+            position: relative;
+        }
+        .startup-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
+        }
+        .favorite-btn {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .favorite-btn:hover, .favorite-btn.active {
+            color: #ff4757;
+        }
+        .startup-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .startup-logo {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-1);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--primary-color);
+            font-size: 1.5rem;
+        }
+        .startup-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.3rem;
+            color: var(--text-primary);
+        }
+        .startup-meta {
+            display: flex;
+            gap: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .startup-tag {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--secondary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        .startup-description {
+            color: var(--text-secondary);
+            margin: 1.5rem 0;
+            line-height: 1.6;
+        }
+        .startup-stats {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--card-border);
+        }
+        .startup-stat {
+            text-align: center;
+        }
+        .startup-stat-value {
+            font-weight: 700;
+            color: var(--secondary-color);
+            display: block;
+            font-size: 1.1rem;
+        }
+        .startup-stat-label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+        }
+        /* Support Navigator */
+        .support-navigator {
+            margin: 2rem 0;
+        }
+        .support-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .support-card {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(0, 255, 200, 0.05));
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+        .support-card:hover {
+            transform: scale(1.03);
+            box-shadow: 0 15px 30px rgba(0, 102, 255, 0.2);
+        }
+        .support-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        .support-item {
+            margin-bottom: 1.2rem;
+        }
+        .support-item h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .support-item p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        /* Resource Library */
+        .resource-library {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .resource-categories {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .category-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .category-btn.active {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            border-color: transparent;
+        }
+        .category-btn:hover:not(.active) {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+        .resource-card {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1.5rem;
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.15);
+        }
+        .resource-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-color);
+        }
+        .resource-card h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-primary);
+        }
+        .resource-card p {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        .resource-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .download-btn {
+            color: var(--secondary-color);
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            color: var(--accent-color);
+        }
+        /* Ecosystem Dashboard */
+        .ecosystem-dashboard {
+            background: var(--card-bg);
+            border-radius: 25px;
+            padding: 2rem;
+            margin: 2rem 0;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        .dashboard-tabs {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--card-border);
+            padding-bottom: 1rem;
+            flex-wrap: wrap;
+        }
+        .dashboard-tab {
+            background: transparent;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px 50px 0 0;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        .dashboard-tab.active {
+            color: var(--secondary-color);
+        }
+        .dashboard-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1rem;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: var(--gradient-1);
+        }
+        .dashboard-tab:hover:not(.active) {
+            color: var(--text-primary);
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .metric-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            transition: all 0.3s ease;
+        }
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 102, 255, 0.15);
+        }
+        .metric-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary-color);
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .chart-container {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid var(--card-border);
+            height: 400px;
+            position: relative;
+        }
+        .report-section {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            text-align: center;
+            border: 1px solid var(--card-border);
+            margin-top: 1.5rem;
+        }
+        /* Events Calendar */
+        .events-calendar {
+            margin: 2rem 0;
+        }
+        .calendar-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .calendar-nav {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .calendar-nav-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .calendar-nav-btn:hover {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        .current-month {
+            font-size: 1.3rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            min-width: 150px;
+            text-align: center;
+        }
+        .view-toggle {
+            display: flex;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            overflow: hidden;
+        }
+        .view-toggle-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-primary);
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .view-toggle-btn.active {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+        }
+        .event-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .event-filter {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-primary);
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .event-filter.active {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            border-color: transparent;
+        }
+        .event-filter:hover:not(.active) {
+            border-color: var(--secondary-color);
+            color: var(--secondary-color);
+        }
+        .calendar-grid {
+            display: none;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: var(--card-border);
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+        .calendar-grid.active {
+            display: grid;
+        }
+        .calendar-header {
+            background: var(--card-bg);
+            padding: 1rem 0;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .calendar-day {
+            background: var(--card-bg);
+            min-height: 120px;
+            padding: 0.5rem;
+            position: relative;
+        }
+        .calendar-day.other-month {
+            color: var(--text-secondary);
+            opacity: 0.5;
+        }
+        .calendar-day.today {
+            background: rgba(0, 102, 255, 0.1);
+        }
+        .day-number {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+        .day-event {
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            font-size: 0.7rem;
+            padding: 0.2rem 0.4rem;
+            border-radius: 4px;
+            margin-bottom: 0.3rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+        }
+        .events-list {
+            display: block;
+        }
+        .events-list.hidden {
+            display: none;
+        }
+        .event-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--secondary-color);
+            transition: all 0.3s ease;
+        }
+        .event-card:hover {
+            transform: translateX(10px);
+        }
+        .event-date {
+            color: var(--secondary-color);
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+        }
+        .event-title {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+        .event-description {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        .event-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+        .event-location {
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .event-type {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--secondary-color);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+        /* Job Board */
+        .job-board {
+            margin: 2rem 0;
+        }
+        .job-alerts {
+            background: linear-gradient(135deg, rgba(0, 102, 255, 0.05), rgba(0, 255, 200, 0.05));
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(0, 102, 255, 0.2);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+        .job-alerts-icon {
+            font-size: 2rem;
+            color: var(--secondary-color);
+        }
+        .job-alerts-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .job-alerts-content p {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+        .job-alerts-btn {
+            margin-left: auto;
+            white-space: nowrap;
+        }
+        .job-filters {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .job-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+            flex-wrap: wrap;
+            gap: 1.5rem;
+        }
+        .job-card:hover {
+            transform: translateY(-5px);
+        }
+        .job-info h3 {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .job-meta {
+            color: var(--secondary-color);
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+        }
+        .job-description {
+            color: var(--text-secondary);
+            max-width: 600px;
+        }
+        .job-tags {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.8rem;
+            flex-wrap: wrap;
+        }
+        .job-tag {
+            background: rgba(0, 102, 255, 0.1);
+            color: var(--secondary-color);
+            padding: 0.2rem 0.6rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+        /* Community Section */
+        .community-section {
+            margin: 2rem 0;
+        }
+        .community-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+        }
+        .community-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+            transition: all 0.4s ease;
+            height: 100%;
+        }
+        .community-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 102, 255, 0.15);
+        }
+        .community-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        .community-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .community-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+        }
+        .forum-preview {
+            background: var(--card-bg);
+            border-radius: 15px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 1px solid var(--card-border);
+        }
+        .forum-preview h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+        .forum-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+        .mentor-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .mentor-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 50px;
+            padding: 0.5rem 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .mentor-item:hover {
+            border-color: var(--secondary-color);
+        }
+        .mentor-avatar {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .mentor-info {
+            font-size: 0.9rem;
+            color: var(--text-primary);
+        }
+        .mentor-expertise {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        /* Contact Section */
+        .contact-section {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .contact-description {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+        /* Footer */
+        .footer {
+            background: var(--card-bg);
+            padding: 3rem 2rem 2rem;
+            text-align: center;
+            border-top: 1px solid var(--card-border);
+        }
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .footer-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            background: var(--gradient-1);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 2rem;
+        }
+        .footer-links {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.3s ease;
+            font-weight: 500;
+        }
+        .footer-links a:hover {
+            color: var(--secondary-color);
+        }
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+        .social-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary);
+            font-size: 1.3rem;
+            transition: all 0.3s ease;
+        }
+        .social-icon:hover {
+            background: var(--gradient-1);
+            transform: translateY(-5px);
+        }
+        .copyright {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+        .ranking {
+            color: var(--secondary-color);
+            font-size: 0.95rem;
+        }
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+        }
+        .modal-content {
+            background: var(--card-bg);
+            margin: 5% auto;
+            padding: 3rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .close {
+            color: var(--text-secondary);
+            float: right;
+            font-size: 2rem;
+            font-weight: bold;
+            cursor: pointer;
+            position: absolute;
+            right: 1.5rem;
+            top: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        .close:hover {
+            color: var(--secondary-color);
+        }
+        .modal h2 {
+            color: var(--secondary-color);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+        }
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 1rem;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+            box-shadow: 0 0 0 3px rgba(0, 102, 255, 0.2);
+        }
+        .form-row {
+            display: flex;
+            gap: 1rem;
+        }
+        .form-row .form-group {
+            flex: 1;
+        }
+        /* Notification */
+        .notification {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 102, 255, 0.9);
+            color: #fff;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            z-index: 3000;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            max-width: 400px;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        .notification.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+        /* Responsive */
+        @media (max-width: 992px) {
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .nav-links {
+                gap: 1.5rem;
+            }
+            
+            .chart-container {
+                height: 300px;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu {
+                display: flex;
+            }
+            
+            .nav-cta {
+                display: none;
+            }
+            
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.1rem;
+            }
+            
+            .cta-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .job-card {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .event-footer {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .job-alerts {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .job-alerts-btn {
+                margin-left: 0;
+            }
+            
+            .form-row {
+                flex-direction: column;
+            }
+        }
+        @media (max-width: 576px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .features-grid,
+            .support-grid,
+            .community-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .metrics-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .calendar-grid {
+                font-size: 0.8rem;
+            }
+            
+            .calendar-day {
+                min-height: 80px;
+                padding: 0.3rem;
+            }
+            
+            .day-event {
+                font-size: 0.6rem;
+            }
+        }
+        /* Animations */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+    <canvas id="three-canvas"></canvas>
+    
+    <!-- Theme Toggle -->
+    <div class="theme-toggle" onclick="toggleTheme()">
+        <i class="fas fa-moon" id="theme-icon"></i>
+    </div>
+    
+    <!-- Background Settings Toggle -->
+    <div class="bg-settings-toggle" onclick="toggleBgSettings()">
+        <i class="fas fa-cog"></i>
+    </div>
+    
+    <!-- Background Settings Panel -->
+    <div class="bg-settings-panel" id="bgSettingsPanel">
+        <div class="settings-title">Background Settings</div>
+        <div class="setting-item">
+            <label class="setting-label">Animation Speed</label>
+            <input type="range" class="setting-slider" id="animationSpeed" min="0.1" max="2" step="0.1" value="1">
+        </div>
+        <div class="setting-item">
+            <label class="setting-label">Particle Density</label>
+            <input type="range" class="setting-slider" id="particleDensity" min="0.5" max="2" step="0.1" value="1">
+        </div>
+        <div class="setting-item">
+            <label class="setting-label">Mouse Sensitivity</label>
+            <input type="range" class="setting-slider" id="mouseSensitivity" min="0" max="2" step="0.1" value="1">
+        </div>
+        <div class="setting-item">
+            <div class="setting-checkbox">
+                <input type="checkbox" id="glowEffect" checked>
+                <label for="glowEffect">Glow Effect</label>
+            </div>
+        </div>
+        <div class="setting-item">
+            <div class="setting-checkbox">
+                <input type="checkbox" id="interactionEffect" checked>
+                <label for="interactionEffect">Mouse Interaction</label>
+            </div>
+        </div>
+        <div class="setting-item">
+            <div class="setting-checkbox">
+                <input type="checkbox" id="dnaEffect" checked>
+                <label for="dnaEffect">DNA Helix</label>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-rocket"></i> NottinghamStartups
+            </div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#features">Features</a></li>
+                <li><a href="#stories">Success Stories</a></li>
+                <li><a href="#directory">Directory</a></li>
+                <li><a href="#support">Support</a></li>
+                <li><a href="#resources">Resources</a></li>
+                <li><a href="#dashboard">Dashboard</a></li>
+                <li><a href="#events">Events</a></li>
+                <li><a href="#jobs">Jobs</a></li>
+                <li><a href="#community">Community</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <a href="#" class="nav-cta" onclick="openModal('joinModal')">Join Now</a>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1>The Central Hub for Nottingham's Startup Ecosystem</h1>
+            <p>Discover innovative startups, connect with resources, and be part of a thriving community that's positioning Nottingham as a globally recognized startup hub.</p>
+            <div class="cta-buttons">
+                <a href="#directory" class="btn btn-primary">Explore Startups</a>
+                <a href="#" class="btn btn-secondary" onclick="openModal('joinModal')">Join Platform</a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Newsletter Signup -->
+    <section class="section">
+        <div class="container">
+            <div class="newsletter fade-in">
+                <h3>Stay Updated</h3>
+                <p>Subscribe to our newsletter for the latest startup news, events, and opportunities in Nottingham.</p>
+                <form class="newsletter-form" id="newsletterForm">
+                    <input type="email" class="newsletter-input" placeholder="Your email address" required>
+                    <button type="submit" class="btn btn-primary">Subscribe</button>
+                </form>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Features Section -->
+    <section id="features" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Platform Features</h2>
+                <p class="section-subtitle">Everything you need to succeed in Nottingham's startup ecosystem</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">🚀</span>
+                    <h3>Startup Discovery</h3>
+                    <p>Searchable database of Nottingham's leading startups with detailed profiles, funding history, and key contacts.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">🎯</span>
+                    <h3>Support Navigator</h3>
+                    <p>Comprehensive directory of funding, incubators, accelerators, mentors, and resources tailored for your startup stage.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">📊</span>
+                    <h3>Ecosystem Insights</h3>
+                    <p>Real-time analytics and benchmarking data on Nottingham's startup ecosystem performance and growth trends.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">📅</span>
+                    <h3>Events Calendar</h3>
+                    <p>Aggregated listings of all startup events, meetups, pitch nights, and workshops happening in Nottingham.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">🤝</span>
+                    <h3>Networking Hub</h3>
+                    <p>Connect with mentors, investors, and corporate partners through our intelligent matchmaking system.</p>
+                </div>
+                <div class="feature-card fade-in">
+                    <span class="feature-icon">💼</span>
+                    <h3>Job Board</h3>
+                    <p>Dedicated space for startups to post roles and for talent to discover exciting opportunities in Nottingham.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Success Stories Section -->
+    <section id="stories" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Success Stories</h2>
+                <p class="section-subtitle">Learn from founders who've built successful startups in Nottingham</p>
+            </div>
+            
+            <div class="success-stories">
+                <div class="stories-grid">
+                    <div class="story-card fade-in">
+                        <div class="story-header">
+                            <img src="https://randomuser.me/api/portraits/women/32.jpg" alt="Sarah Johnson" class="founder-avatar">
+                            <div class="founder-info">
+                                <h3>Sarah Johnson</h3>
+                                <p>CEO, HealthTracker</p>
+                            </div>
+                        </div>
+                        <p class="story-quote">Nottingham's startup ecosystem provided the perfect environment for us to grow. The access to talent, investors, and mentorship has been invaluable to our journey from a small team to a Series A company.</p>
+                        <div class="story-metrics">
+                            <div class="story-metric">
+                                <span class="story-metric-value">£5M</span>
+                                <span class="story-metric-label">Funding Raised</span>
+                            </div>
+                            <div class="story-metric">
+                                <span class="story-metric-value">45</span>
+                                <span class="story-metric-label">Employees</span>
+                            </div>
+                            <div class="story-metric">
+                                <span class="story-metric-value">3</span>
+                                <span class="story-metric-label">Years</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card fade-in">
+                        <div class="story-header">
+                            <img src="https://randomuser.me/api/portraits/men/54.jpg" alt="Michael Chen" class="founder-avatar">
+                            <div class="founder-info">
+                                <h3>Michael Chen</h3>
+                                <p>Founder, TechFlow AI</p>
+                            </div>
+                        </div>
+                        <p class="story-quote">The connections we made through NottinghamStartups.com were transformative. We found our lead investor, key hires, and even our first enterprise customers through the platform.</p>
+                        <div class="story-metrics">
+                            <div class="story-metric">
+                                <span class="story-metric-value">£2.5M</span>
+                                <span class="story-metric-label">Funding Raised</span>
+                            </div>
+                            <div class="story-metric">
+                                <span class="story-metric-value">18</span>
+                                <span class="story-metric-label">Employees</span>
+                            </div>
+                            <div class="story-metric">
+                                <span class="story-metric-value">2</span>
+                                <span class="story-metric-label">Years</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="story-card fade-in">
+                        <div class="story-header">
+                            <img src="https://randomuser.me/api/portraits/women/68.jpg" alt="Emma Williams" class="founder-avatar">
+                            <div class="founder-info">
+                                <h3>Emma Williams</h3>
+                                <p>Co-Founder, GreenTech Solutions</p>
+                            </div>
+                        </div>
+                        <p class="story-quote">Starting a sustainable tech company in Nottingham was the right choice. The support from local universities, the city council, and the startup community has been incredible.</p>
+                        <div class="story-metrics">
+                            <div class="story-metric">
+                                <span class="story-metric-value">£1.2M</span>
+                                <span class="story-metric-label">Funding Raised</span>
+                            </div>
+                            <div class="story-metric">
+                                <span class="story-metric-value">12</span>
+                                <span class="story-metric-label">Employees</span>
+                            </div>
+                            <div class="story-metric">
+                                <span class="story-metric-value">1.5</span>
+                                <span class="story-metric-label">Years</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Startup Directory Section -->
+    <section id="directory" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Startup Directory</h2>
+                <p class="section-subtitle">Discover the most innovative startups in Nottingham</p>
+            </div>
+            
+            <div class="startup-directory fade-in">
+                <div class="directory-controls">
+                    <div class="view-options">
+                        <button class="view-btn active" onclick="setView('grid')">
+                            <i class="fas fa-th"></i>
+                        </button>
+                        <button class="view-btn" onclick="setView('list')">
+                            <i class="fas fa-list"></i>
+                        </button>
+                    </div>
+                    <div class="sort-options">
+                        <label for="sortSelect" style="color: var(--text-secondary);">Sort by:</label>
+                        <select class="filter-select" id="sortSelect" onchange="sortStartups()">
+                            <option value="name">Name</option>
+                            <option value="funding">Funding</option>
+                            <option value="employees">Employees</option>
+                            <option value="founded">Founded</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="search-bar">
+                    <input type="text" class="search-input" placeholder="Search startups by name, industry, or keyword..." id="startupSearch">
+                    <select class="filter-select" id="industryFilter">
+                        <option value="">All Industries</option>
+                        <option value="fintech">FinTech</option>
+                        <option value="healthtech">HealthTech</option>
+                        <option value="edtech">EdTech</option>
+                        <option value="proptech">PropTech</option>
+                        <option value="retail">Retail Tech</option>
+                        <option value="ai">AI/ML</option>
+                    </select>
+                    <select class="filter-select" id="stageFilter">
+                        <option value="">All Stages</option>
+                        <option value="pre-seed">Pre-seed</option>
+                        <option value="seed">Seed</option>
+                        <option value="series-a">Series A</option>
+                        <option value="growth">Growth</option>
+                    </select>
+                    <button class="search-btn" onclick="searchStartups()">Search</button>
+                </div>
+                
+                <div class="startup-grid" id="startupGrid">
+                    <!-- Startup cards will be populated here -->
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Support Navigator Section -->
+    <section id="support" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Support Navigator</h2>
+                <p class="section-subtitle">Find the right resources for your startup journey</p>
+            </div>
+            
+            <div class="support-navigator">
+                <div class="support-grid">
+                    <div class="support-card fade-in">
+                        <h3>📈 Funding Opportunities</h3>
+                        <div class="support-item">
+                            <h4>D2N2 Growth Hub</h4>
+                            <p>Local enterprise support and funding guidance</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>Nottingham Business Ventures</h4>
+                            <p>Angel investment and mentorship programs</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>UK Government Grants</h4>
+                            <p>Innovate UK, SEIS, EIS schemes</p>
+                        </div>
+                        <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Explore Funding</a>
+                    </div>
+                    
+                    <div class="support-card fade-in">
+                        <h3>🏢 Incubators & Accelerators</h3>
+                        <div class="support-item">
+                            <h4>NTU Student Enterprise</h4>
+                            <p>University-backed startup incubation</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>University of Nottingham Innovation Park</h4>
+                            <p>Research-focused startup support</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>Hatch Enterprise</h4>
+                            <p>Social enterprise acceleration</p>
+                        </div>
+                        <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Find Programs</a>
+                    </div>
+                    
+                    <div class="support-card fade-in">
+                        <h3>👥 Mentorship & Networks</h3>
+                        <div class="support-item">
+                            <h4>Tech Nottingham</h4>
+                            <p>Monthly meetups and networking events</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>Nottingham Entrepreneurs Network</h4>
+                            <p>Peer-to-peer learning community</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>Industry Expert Mentors</h4>
+                            <p>One-on-one guidance from successful founders</p>
+                        </div>
+                        <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Connect Now</a>
+                    </div>
+                    
+                    <div class="support-card fade-in">
+                        <h3>🎓 Education & Training</h3>
+                        <div class="support-item">
+                            <h4>Startup Bootcamps</h4>
+                            <p>Intensive entrepreneurship training</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>Digital Marketing Workshops</h4>
+                            <p>Growth hacking and customer acquisition</p>
+                        </div>
+                        <div class="support-item">
+                            <h4>Legal & Finance Seminars</h4>
+                            <p>Compliance and funding guidance</p>
+                        </div>
+                        <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Learn More</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Resource Library Section -->
+    <section id="resources" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Resource Library</h2>
+                <p class="section-subtitle">Access guides, templates, and tools to accelerate your startup journey</p>
+            </div>
+            
+            <div class="resource-library fade-in">
+                <div class="resource-categories">
+                    <button class="category-btn active" onclick="filterResources('all')">All Resources</button>
+                    <button class="category-btn" onclick="filterResources('guides')">Guides</button>
+                    <button class="category-btn" onclick="filterResources('templates')">Templates</button>
+                    <button class="category-btn" onclick="filterResources('tools')">Tools</button>
+                    <button class="category-btn" onclick="filterResources('reports')">Reports</button>
+                </div>
+                
+                <div class="resources-grid" id="resourcesGrid">
+                    <div class="resource-card" data-category="guides">
+                        <div class="resource-icon">📝</div>
+                        <h3>Startup Funding Guide</h3>
+                        <p>Comprehensive guide to funding options available for startups in Nottingham.</p>
+                        <div class="resource-meta">
+                            <span>PDF • 2.4MB</span>
+                            <span class="download-btn">Download</span>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card" data-category="templates">
+                        <div class="resource-icon">📋</div>
+                        <h3>Pitch Deck Template</h3>
+                        <p>Professional pitch deck template designed specifically for Nottingham startups.</p>
+                        <div class="resource-meta">
+                            <span>PPTX • 1.8MB</span>
+                            <span class="download-btn">Download</span>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card" data-category="tools">
+                        <div class="resource-icon">🔧</div>
+                        <h3>Financial Model Template</h3>
+                        <p>Excel template for creating financial projections and investor models.</p>
+                        <div class="resource-meta">
+                            <span>XLSX • 0.9MB</span>
+                            <span class="download-btn">Download</span>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card" data-category="guides">
+                        <div class="resource-icon">📝</div>
+                        <h3>Legal Checklist</h3>
+                        <p>Essential legal considerations for startups in the UK.</p>
+                        <div class="resource-meta">
+                            <span>PDF • 1.2MB</span>
+                            <span class="download-btn">Download</span>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card" data-category="reports">
+                        <div class="resource-icon">📊</div>
+                        <h3>Nottingham Tech Scene Report</h3>
+                            <p>Annual report on the state of technology startups in Nottingham.</p>
+                        <div class="resource-meta">
+                            <span>PDF • 4.7MB</span>
+                            <span class="download-btn">Download</span>
+                        </div>
+                    </div>
+                    
+                    <div class="resource-card" data-category="templates">
+                        <div class="resource-icon">📋</div>
+                        <h3>Employment Contract Template</h3>
+                        <p>Customizable employment contract template for startup hires.</p>
+                        <div class="resource-meta">
+                            <span>DOCX • 0.5MB</span>
+                            <span class="download-btn">Download</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Ecosystem Dashboard Section -->
+    <section id="dashboard" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Ecosystem Dashboard</h2>
+                <p class="section-subtitle">Key metrics and insights into Nottingham's startup ecosystem</p>
+            </div>
+            
+            <div class="ecosystem-dashboard fade-in">
+                <div class="dashboard-tabs">
+                    <button class="dashboard-tab active" onclick="showTab('overview')">Overview</button>
+                    <button class="dashboard-tab" onclick="showTab('funding')">Funding Trends</button>
+                    <button class="dashboard-tab" onclick="showTab('growth')">Growth Metrics</button>
+                    <button class="dashboard-tab" onclick="showTab('comparison')">City Comparison</button>
+                </div>
+                
+                <div id="overview" class="tab-content active">
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <span class="metric-number" id="totalStartups">150+</span>
+                            <div class="metric-label">Active Startups</div>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-number" id="totalFunding">£45M</span>
+                            <div class="metric-label">Total Funding Raised</div>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-number" id="jobsCreated">2,400+</span>
+                            <div class="metric-label">Jobs Created</div>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-number" id="globalRank">#226</span>
+                            <div class="metric-label">Global Startup Ranking</div>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-number" id="ukRank">#12</span>
+                            <div class="metric-label">UK Startup Ranking</div>
+                        </div>
+                        <div class="metric-card">
+                            <span class="metric-number" id="supportOrgs">25+</span>
+                            <div class="metric-label">Support Organizations</div>
+                        </div>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="startupsByIndustryChart"></canvas>
+                    </div>
+                    
+                    <div class="report-section">
+                        <h3 style="color: var(--secondary-color); margin-bottom: 1rem;">Annual State of Nottingham Startups Report</h3>
+                        <p style="color: var(--text-secondary); margin-bottom: 1.5rem;">Comprehensive analysis of the ecosystem with benchmarking against other UK startup hubs.</p>
+                        <button class="btn btn-primary" onclick="openModal('reportModal')">Download Report</button>
+                    </div>
+                </div>
+                
+                <div id="funding" class="tab-content">
+                    <div class="chart-container">
+                        <canvas id="fundingTrendsChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="fundingByStageChart"></canvas>
+                    </div>
+                </div>
+                
+                <div id="growth" class="tab-content">
+                    <div class="chart-container">
+                        <canvas id="growthMetricsChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="jobGrowthChart"></canvas>
+                    </div>
+                </div>
+                
+                <div id="comparison" class="tab-content">
+                    <div class="chart-container">
+                        <canvas id="cityComparisonChart"></canvas>
+                    </div>
+                    
+                    <div class="chart-container">
+                        <canvas id="industryComparisonChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Events Calendar Section -->
+    <section id="events" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Events Calendar</h2>
+                <p class="section-subtitle">Stay updated with startup events in Nottingham</p>
+            </div>
+            
+            <div class="events-calendar">
+                <div class="calendar-controls">
+                    <div class="calendar-nav">
+                        <button class="calendar-nav-btn" onclick="changeMonth(-1)">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <div class="current-month" id="currentMonth">September 2025</div>
+                        <button class="calendar-nav-btn" onclick="changeMonth(1)">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="view-toggle">
+                        <button class="view-toggle-btn active" onclick="setCalendarView('list')">List View</button>
+                        <button class="view-toggle-btn" onclick="setCalendarView('calendar')">Calendar View</button>
+                    </div>
+                </div>
+                
+                <div class="event-filters">
+                    <button class="event-filter active" onclick="filterEvents('all')">All Events</button>
+                    <button class="event-filter" onclick="filterEvents('meetup')">Meetups</button>
+                    <button class="event-filter" onclick="filterEvents('pitch')">Pitch Events</button>
+                    <button class="event-filter" onclick="filterEvents('workshop')">Workshops</button>
+                    <button class="event-filter" onclick="filterEvents('conference')">Conferences</button>
+                </div>
+                
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Calendar will be generated here -->
+                </div>
+                
+                <div class="events-list" id="eventsList">
+                    <div class="event-card fade-in" data-type="meetup">
+                        <div class="event-date">Sep 15, 2025</div>
+                        <h3 class="event-title">Tech Nottingham Monthly Meetup</h3>
+                        <p class="event-description">Join the community for networking, talks, and startup showcases. This month featuring AI in healthcare.</p>
+                        <div class="event-footer">
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i> Nottingham Conference Centre
+                            </div>
+                            <div>
+                                <span class="event-type">Meetup</span>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;">Register</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-card fade-in" data-type="pitch">
+                        <div class="event-date">Sep 22, 2025</div>
+                        <h3 class="event-title">Startup Pitch Night</h3>
+                        <p class="event-description">Early-stage startups pitch to local investors and get feedback from successful entrepreneurs.</p>
+                        <div class="event-footer">
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i> NTU Entrepreneurship Centre
+                            </div>
+                            <div>
+                                <span class="event-type">Pitch Event</span>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;">Apply to Pitch</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-card fade-in" data-type="workshop">
+                        <div class="event-date">Oct 5, 2025</div>
+                        <h3 class="event-title">FinTech Innovation Workshop</h3>
+                        <p class="event-description">Deep dive into the latest fintech trends and regulatory landscape with industry experts.</p>
+                        <div class="event-footer">
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i> University of Nottingham Innovation Park
+                            </div>
+                            <div>
+                                <span class="event-type">Workshop</span>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;">Book Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="event-card fade-in" data-type="meetup">
+                        <div class="event-date">Oct 12, 2025</div>
+                        <h3 class="event-title">Women in Tech Nottingham</h3>
+                        <p class="event-description">Networking event supporting female entrepreneurs and tech professionals in the region.</p>
+                        <div class="event-footer">
+                            <div class="event-location">
+                                <i class="fas fa-map-marker-alt"></i> Capital One UK Office
+                            </div>
+                            <div>
+                                <span class="event-type">Meetup</span>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;">Join Event</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Job Board Section -->
+    <section id="jobs" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Job Board</h2>
+                <p class="section-subtitle">Discover opportunities at Nottingham's innovative startups</p>
+            </div>
+            
+            <div class="job-board">
+                <div class="job-alerts fade-in">
+                    <div class="job-alerts-icon">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="job-alerts-content">
+                        <h3>Job Alerts</h3>
+                        <p>Get notified when new jobs matching your preferences are posted.</p>
+                    </div>
+                    <button class="btn btn-primary job-alerts-btn" onclick="openModal('jobAlertModal')">Set Up Alerts</button>
+                </div>
+                
+                <div class="job-filters">
+                    <select class="filter-select" id="jobTypeFilter">
+                        <option value="">All Job Types</option>
+                        <option value="full-time">Full-time</option>
+                        <option value="part-time">Part-time</option>
+                        <option value="contract">Contract</option>
+                        <option value="intern">Internship</option>
+                    </select>
+                    <select class="filter-select" id="jobIndustryFilter">
+                        <option value="">All Industries</option>
+                        <option value="fintech">FinTech</option>
+                        <option value="healthtech">HealthTech</option>
+                        <option value="edtech">EdTech</option>
+                        <option value="proptech">PropTech</option>
+                        <option value="retail">Retail Tech</option>
+                        <option value="ai">AI/ML</option>
+                    </select>
+                    <select class="filter-select" id="jobExperienceFilter">
+                        <option value="">All Experience Levels</option>
+                        <option value="entry">Entry Level</option>
+                        <option value="mid">Mid Level</option>
+                        <option value="senior">Senior Level</option>
+                        <option value="executive">Executive</option>
+                    </select>
+                    <button class="search-btn" onclick="filterJobs()">Filter Jobs</button>
+                </div>
+                
+                <div class="job-card fade-in">
+                    <div class="job-info">
+                        <h3>Senior Full Stack Developer</h3>
+                        <div class="job-meta">TechFlow AI • £45,000 - £65,000 • Full-time</div>
+                        <p class="job-description">Join our AI-powered workflow automation startup. Remote-first culture with Nottingham office.</p>
+                        <div class="job-tags">
+                            <span class="job-tag">React</span>
+                            <span class="job-tag">Node.js</span>
+                            <span class="job-tag">AI/ML</span>
+                            <span class="job-tag">Remote</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Apply Now</button>
+                </div>
+                
+                <div class="job-card fade-in">
+                    <div class="job-info">
+                        <h3>Marketing Manager</h3>
+                        <div class="job-meta">GreenTech Solutions • £35,000 - £45,000 • Full-time</div>
+                        <p class="job-description">Lead marketing efforts for sustainable technology solutions. Experience in B2B SaaS preferred.</p>
+                        <div class="job-tags">
+                            <span class="job-tag">B2B</span>
+                            <span class="job-tag">SaaS</span>
+                            <span class="job-tag">Sustainability</span>
+                            <span class="job-tag">Growth</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Apply Now</button>
+                </div>
+                
+                <div class="job-card fade-in">
+                    <div class="job-info">
+                        <h3>Product Designer</h3>
+                        <div class="job-meta">HealthTracker • £40,000 - £55,000 • Full-time</div>
+                        <p class="job-description">Design user experiences for our health monitoring platform. Remote with quarterly team meetups.</p>
+                        <div class="job-tags">
+                            <span class="job-tag">UX/UI</span>
+                            <span class="job-tag">Figma</span>
+                            <span class="job-tag">HealthTech</span>
+                            <span class="job-tag">Remote</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Apply Now</button>
+                </div>
+                
+                <div class="job-card fade-in">
+                    <div class="job-info">
+                        <h3>Sales Development Representative</h3>
+                        <div class="job-meta">EdLearn Platform • £25,000 + Commission • Full-time</div>
+                        <p class="job-description">Build our sales pipeline and connect with educational institutions. Great growth opportunity.</p>
+                        <div class="job-tags">
+                            <span class="job-tag">Sales</span>
+                            <span class="job-tag">EdTech</span>
+                            <span class="job-tag">B2B</span>
+                            <span class="job-tag">Entry Level</span>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary">Apply Now</button>
+                </div>
+                
+                <div style="text-align: center; margin-top: 1.5rem;">
+                    <button class="btn btn-secondary" onclick="openModal('jobModal')">Post a Job</button>
+                    <a href="#" class="btn btn-primary" style="margin-left: 1rem;">View All Jobs</a>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Community Section -->
+    <section id="community" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Community Hub</h2>
+                <p class="section-subtitle">Connect, collaborate, and grow with Nottingham's startup community</p>
+            </div>
+            
+            <div class="community-section">
+                <div class="community-grid">
+                    <div class="community-card fade-in">
+                        <div class="community-icon">
+                            <i class="fas fa-comments"></i>
+                        </div>
+                        <h3>Discussion Forums</h3>
+                        <p>Join conversations with fellow entrepreneurs, ask questions, and share knowledge in our community forums.</p>
+                        
+                        <div class="forum-preview">
+                            <h4>Best co-working spaces in Nottingham?</h4>
+                            <div class="forum-meta">
+                                <span>12 replies</span>
+                                <span>2 hours ago</span>
+                            </div>
+                        </div>
+                        
+                        <div class="forum-preview">
+                            <h4>Seeking technical co-founder for HealthTech startup</h4>
+                            <div class="forum-meta">
+                                <span>8 replies</span>
+                                <span>Yesterday</span>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Join Discussions</button>
+                    </div>
+                    
+                    <div class="community-card fade-in">
+                        <div class="community-icon">
+                            <i class="fas fa-user-tie"></i>
+                        </div>
+                        <h3>Mentorship Program</h3>
+                        <p>Connect with experienced mentors who can provide guidance, advice, and support for your startup journey.</p>
+                        
+                        <div class="mentor-list">
+                            <div class="mentor-item">
+                                <img src="https://randomuser.me/api/portraits/men/32.jpg" alt="James Wilson" class="mentor-avatar">
+                                <div>
+                                    <div class="mentor-info">James Wilson</div>
+                                    <div class="mentor-expertise">SaaS Growth</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mentor-item">
+                                <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Priya Patel" class="mentor-avatar">
+                                <div>
+                                    <div class="mentor-info">Priya Patel</div>
+                                    <div class="mentor-expertise">HealthTech</div>
+                                </div>
+                            </div>
+                            
+                            <div class="mentor-item">
+                                <img src="https://randomuser.me/api/portraits/men/67.jpg" alt="David Chen" class="mentor-avatar">
+                                <div>
+                                    <div class="mentor-info">David Chen</div>
+                                    <div class="mentor-expertise">FinTech</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button class="btn btn-secondary" style="width: 100%;">Find a Mentor</button>
+                    </div>
+                    
+                    <div class="community-card fade-in">
+                        <div class="community-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h3>Service Providers</h3>
+                        <p>Find trusted service providers who specialize in working with startups, from legal and accounting to marketing and design.</p>
+                        
+                        <div class="support-item">
+                            <h4>Nottingham Startup Lawyers</h4>
+                            <p>Specialist legal services for startups, including incorporation, funding agreements, and IP protection.</p>
+                        </div>
+                        
+                        <div class="support-item">
+                            <h4>Startup Accounting Plus</h4>
+                            <p>Accounting and financial services tailored for early-stage companies and growing startups.</p>
+                        </div>
+                        
+                        <div class="support-item">
+                            <h4>BrandForge Creative</h4>
+                            <p>Brand identity, web design, and digital marketing services for tech startups.</p>
+                        </div>
+                        
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Browse Services</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="section">
+        <div class="container">
+            <div class="contact-section fade-in">
+                <h2 class="section-title">Get Involved</h2>
+                <p class="contact-description">Join Nottingham's thriving startup ecosystem. Whether you're a founder, investor, or supporter, there's a place for you here.</p>
+                <div class="cta-buttons">
+                    <button class="btn btn-primary" onclick="openModal('joinModal')">Join as Startup</button>
+                    <button class="btn btn-secondary" onclick="openModal('partnerModal')">Become a Partner</button>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-logo">NottinghamStartups</div>
+            <div class="footer-links">
+                <a href="#">About</a>
+                <a href="#">Privacy Policy</a>
+                <a href="#">Terms of Service</a>
+                <a href="#">API Access</a>
+                <a href="#">Support</a>
+                <a href="#">Contact</a>
+            </div>
+            <div class="social-icons">
+                <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-linkedin"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-facebook"></i></a>
+                <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            </div>
+            <p class="copyright">&copy; 2025 NottinghamStartups.com. Empowering Nottingham's Innovation Ecosystem.</p>
+            <p class="ranking">Ranked #12 in UK, #226 Globally - StartupBlink 2025</p>
+        </div>
+    </footer>
+    
+    <!-- Modals -->
+    <div id="joinModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('joinModal')">&times;</span>
+            <h2>Join NottinghamStartups</h2>
+            <form id="joinForm">
+                <div class="form-group">
+                    <label for="companyName">Startup Name *</label>
+                    <input type="text" id="companyName" name="companyName" required>
+                </div>
+                <div class="form-group">
+                    <label for="industry">Industry</label>
+                    <select id="industry" name="industry">
+                        <option value="">Select Industry</option>
+                        <option value="fintech">FinTech</option>
+                        <option value="healthtech">HealthTech</option>
+                        <option value="edtech">EdTech</option>
+                        <option value="proptech">PropTech</option>
+                        <option value="retail">Retail Tech</option>
+                        <option value="ai">AI/ML</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="stage">Funding Stage</label>
+                    <select id="stage" name="stage">
+                        <option value="">Select Stage</option>
+                        <option value="idea">Idea Stage</option>
+                        <option value="pre-seed">Pre-seed</option>
+                        <option value="seed">Seed</option>
+                        <option value="series-a">Series A</option>
+                        <option value="growth">Growth</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="founderName">Founder Name *</label>
+                        <input type="text" id="founderName" name="founderName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email *</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Company Description</label>
+                    <textarea id="description" name="description" rows="4" placeholder="Tell us about your startup..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Application</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="partnerModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('partnerModal')">&times;</span>
+            <h2>Become a Partner</h2>
+            <form id="partnerForm">
+                <div class="form-group">
+                    <label for="orgName">Organization Name *</label>
+                    <input type="text" id="orgName" name="orgName" required>
+                </div>
+                <div class="form-group">
+                    <label for="orgType">Organization Type</label>
+                    <select id="orgType" name="orgType">
+                        <option value="">Select Type</option>
+                        <option value="vc">Venture Capital</option>
+                        <option value="angel">Angel Investor</option>
+                        <option value="incubator">Incubator</option>
+                        <option value="accelerator">Accelerator</option>
+                        <option value="corporate">Corporate</option>
+                        <option value="university">University</option>
+                        <option value="government">Government/Agency</option>
+                        <option value="service">Service Provider</option>
+                    </select>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="contactName">Contact Name *</label>
+                        <input type="text" id="contactName" name="contactName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="contactEmail">Email *</label>
+                        <input type="email" id="contactEmail" name="contactEmail" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="partnership">Partnership Interest</label>
+                    <textarea id="partnership" name="partnership" rows="4" placeholder="How would you like to support Nottingham's startup ecosystem?"></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Partnership Request</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="jobModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('jobModal')">&times;</span>
+            <h2>Post a Job</h2>
+            <form id="jobForm">
+                <div class="form-group">
+                    <label for="jobTitle">Job Title *</label>
+                    <input type="text" id="jobTitle" name="jobTitle" required>
+                </div>
+                <div class="form-group">
+                    <label for="jobCompany">Company Name *</label>
+                    <input type="text" id="jobCompany" name="jobCompany" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jobSalary">Salary Range</label>
+                        <input type="text" id="jobSalary" name="jobSalary" placeholder="e.g., £40,000 - £60,000">
+                    </div>
+                    <div class="form-group">
+                        <label for="jobType">Job Type</label>
+                        <select id="jobType" name="jobType">
+                            <option value="full-time">Full-time</option>
+                            <option value="part-time">Part-time</option>
+                            <option value="contract">Contract</option>
+                            <option value="intern">Internship</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="jobDescription">Job Description</label>
+                    <textarea id="jobDescription" name="jobDescription" rows="5" placeholder="Describe the role, requirements, and what makes your startup special..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="jobEmail">Contact Email *</label>
+                        <input type="email" id="jobEmail" name="jobEmail" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="jobDeadline">Application Deadline</label>
+                        <input type="date" id="jobDeadline" name="jobDeadline">
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Post Job (£50/month)</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="reportModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('reportModal')">&times;</span>
+            <h2>Download Annual Report</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Get the comprehensive "State of Nottingham Startups 2025" report with ecosystem analysis, benchmarking data, and growth projections.</p>
+            <form id="reportForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reportName">Full Name *</label>
+                        <input type="text" id="reportName" name="reportName" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reportEmail">Email *</label>
+                        <input type="email" id="reportEmail" name="reportEmail" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="reportOrg">Organization</label>
+                        <input type="text" id="reportOrg" name="reportOrg">
+                    </div>
+                    <div class="form-group">
+                        <label for="reportRole">Your Role</label>
+                        <select id="reportRole" name="reportRole">
+                            <option value="">Select Role</option>
+                            <option value="founder">Founder/Entrepreneur</option>
+                            <option value="investor">Investor</option>
+                            <option value="corporate">Corporate</option>
+                            <option value="government">Government/Agency</option>
+                            <option value="academic">Academic/Research</option>
+                            <option value="media">Media/Journalist</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Download Report</button>
+            </form>
+        </div>
+    </div>
+    
+    <div id="jobAlertModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('jobAlertModal')">&times;</span>
+            <h2>Set Up Job Alerts</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Get notified when new jobs matching your preferences are posted.</p>
+            <form id="jobAlertForm">
+                <div class="form-group">
+                    <label for="alertName">Your Name *</label>
+                    <input type="text" id="alertName" name="alertName" required>
+                </div>
+                <div class="form-group">
+                    <label for="alertEmail">Email *</label>
+                    <input type="email" id="alertEmail" name="alertEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="alertKeywords">Keywords</label>
+                    <input type="text" id="alertKeywords" name="alertKeywords" placeholder="e.g., developer, marketing, design">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="alertIndustry">Industry</label>
+                        <select id="alertIndustry" name="alertIndustry">
+                            <option value="">All Industries</option>
+                            <option value="fintech">FinTech</option>
+                            <option value="healthtech">HealthTech</option>
+                            <option value="edtech">EdTech</option>
+                            <option value="proptech">PropTech</option>
+                            <option value="retail">Retail Tech</option>
+                            <option value="ai">AI/ML</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="alertType">Job Type</label>
+                        <select id="alertType" name="alertType">
+                            <option value="">All Types</option>
+                            <option value="full-time">Full-time</option>
+                            <option value="part-time">Part-time</option>
+                            <option value="contract">Contract</option>
+                            <option value="intern">Internship</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="alertFrequency">Notification Frequency</label>
+                    <select id="alertFrequency" name="alertFrequency">
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="biweekly">Bi-weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Set Up Alert</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Notification -->
+    <div class="notification" id="notification"></div>
+    
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const body = document.body;
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (body.getAttribute('data-theme') === 'dark') {
+                body.removeAttribute('data-theme');
+                themeIcon.className = 'fas fa-moon';
+                localStorage.setItem('theme', 'light');
+            } else {
+                body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+                localStorage.setItem('theme', 'dark');
+            }
+        }
+        
+        // Load saved theme
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedTheme = localStorage.getItem('theme');
+            const themeIcon = document.getElementById('theme-icon');
+            
+            if (savedTheme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                themeIcon.className = 'fas fa-sun';
+            }
+        });
+        
+        // Background Settings Toggle
+        function toggleBgSettings() {
+            const panel = document.getElementById('bgSettingsPanel');
+            panel.classList.toggle('active');
+        }
+        
+        // Three.js Background Animation
+        let scene, camera, renderer;
+        let innovationGroup, hopeGroup, talentGroup, excellenceGroup, researchGroup, businessGroup, dnaGroup;
+        let mouseX = 0, mouseY = 0;
+        let windowHalfX = window.innerWidth / 2;
+        let windowHalfY = window.innerHeight / 2;
+        let animationSpeed = 1;
+        let particleDensity = 1;
+        let mouseSensitivity = 1;
+        let glowEffect = true;
+        let interactionEffect = true;
+        let dnaEffect = true;
+        let composer, renderPass, unrealPass;
+        
+        function initThreeJS() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 50;
+            
+            renderer = new THREE.WebGLRenderer({ 
+                canvas: document.getElementById('three-canvas'), 
+                alpha: true,
+                antialias: true 
+            });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+            
+            // Create groups for different concepts
+            innovationGroup = new THREE.Group();
+            hopeGroup = new THREE.Group();
+            talentGroup = new THREE.Group();
+            excellenceGroup = new THREE.Group();
+            researchGroup = new THREE.Group();
+            businessGroup = new THREE.Group();
+            dnaGroup = new THREE.Group();
+            
+            scene.add(innovationGroup);
+            scene.add(hopeGroup);
+            scene.add(talentGroup);
+            scene.add(excellenceGroup);
+            scene.add(researchGroup);
+            scene.add(businessGroup);
+            scene.add(dnaGroup);
+            
+            // Innovation - Dynamic, evolving shapes
+            const innovationGeometry = new THREE.IcosahedronGeometry(1, 1);
+            for (let i = 0; i < 15 * particleDensity; i++) {
+                const innovationMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x0066ff,
+                    transparent: true,
+                    opacity: 0.6,
+                    wireframe: true
+                });
+                const innovationMesh = new THREE.Mesh(innovationGeometry, innovationMaterial);
+                innovationMesh.position.x = (Math.random() - 0.5) * 80;
+                innovationMesh.position.y = (Math.random() - 0.5) * 80;
+                innovationMesh.position.z = (Math.random() - 0.5) * 80;
+                innovationMesh.scale.setScalar(Math.random() * 2 + 0.5);
+                innovationMesh.userData = { 
+                    rotationSpeed: {
+                        x: Math.random() * 0.02,
+                        y: Math.random() * 0.02
+                    },
+                    scaleSpeed: Math.random() * 0.5 + 0.5,
+                    scalePhase: Math.random() * Math.PI * 2
+                };
+                innovationGroup.add(innovationMesh);
+            }
+            
+            // Hope - Upward moving particles
+            const hopeGeometry = new THREE.SphereGeometry(0.3, 8, 8);
+            for (let i = 0; i < 30 * particleDensity; i++) {
+                const hopeMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x00ffc8,
+                    transparent: true,
+                    opacity: 0.8,
+                    emissive: 0x00ffc8,
+                    emissiveIntensity: 0.2
+                });
+                const hopeMesh = new THREE.Mesh(hopeGeometry, hopeMaterial);
+                hopeMesh.position.x = (Math.random() - 0.5) * 100;
+                hopeMesh.position.y = -50;
+                hopeMesh.position.z = (Math.random() - 0.5) * 100;
+                hopeMesh.userData = { 
+                    speed: Math.random() * 0.5 + 0.2,
+                    wobbleAmount: Math.random() * 0.2 + 0.1,
+                    wobbleSpeed: Math.random() * 0.5 + 0.5
+                };
+                hopeGroup.add(hopeMesh);
+            }
+            
+            // Talent - Interconnected nodes
+            const talentGeometry = new THREE.SphereGeometry(0.5, 8, 8);
+            const talentNodes = [];
+            for (let i = 0; i < 20 * particleDensity; i++) {
+                const talentMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xff6b35,
+                    transparent: true,
+                    opacity: 0.8
+                });
+                const talentMesh = new THREE.Mesh(talentGeometry, talentMaterial);
+                talentMesh.position.x = (Math.random() - 0.5) * 60;
+                talentMesh.position.y = (Math.random() - 0.5) * 60;
+                talentMesh.position.z = (Math.random() - 0.5) * 60;
+                talentMesh.userData = { 
+                    pulseSpeed: Math.random() * 0.05 + 0.05,
+                    pulsePhase: Math.random() * Math.PI * 2
+                };
+                talentNodes.push(talentMesh);
+                talentGroup.add(talentMesh);
+            }
+            
+            // Create connections between talent nodes
+            const talentLineMaterial = new THREE.LineBasicMaterial({
+                color: 0xff6b35,
+                transparent: true,
+                opacity: 0.3
+            });
+            for (let i = 0; i < talentNodes.length; i++) {
+                for (let j = i + 1; j < talentNodes.length; j++) {
+                    const distance = talentNodes[i].position.distanceTo(talentNodes[j].position);
+                    if (distance < 20) {
+                        const lineGeometry = new THREE.BufferGeometry().setFromPoints([
+                            talentNodes[i].position,
+                            talentNodes[j].position
+                        ]);
+                        const line = new THREE.Line(lineGeometry, talentLineMaterial);
+                        talentGroup.add(line);
+                    }
+                }
+            }
+            
+            // Excellence - Precise geometric patterns
+            const excellenceGeometry = new THREE.BoxGeometry(1, 1, 1);
+            for (let i = 0; i < 25 * particleDensity; i++) {
+                const excellenceMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x8338ec,
+                    transparent: true,
+                    opacity: 0.6,
+                    wireframe: true
+                });
+                const excellenceMesh = new THREE.Mesh(excellenceGeometry, excellenceMaterial);
+                excellenceMesh.position.x = (Math.random() - 0.5) * 70;
+                excellenceMesh.position.y = (Math.random() - 0.5) * 70;
+                excellenceMesh.position.z = (Math.random() - 0.5) * 70;
+                excellenceMesh.rotation.x = Math.random() * Math.PI;
+                excellenceMesh.rotation.y = Math.random() * Math.PI;
+                excellenceMesh.userData = { 
+                    rotationSpeed: {
+                        x: Math.random() * 0.01,
+                        y: Math.random() * 0.01,
+                        z: Math.random() * 0.01
+                    }
+                };
+                excellenceGroup.add(excellenceMesh);
+            }
+            
+            // Research - Data visualization-like elements
+            const researchGeometry = new THREE.CylinderGeometry(0.2, 0.2, 5, 8);
+            for (let i = 0; i < 15 * particleDensity; i++) {
+                const researchMaterial = new THREE.MeshPhongMaterial({
+                    color: 0x20c997,
+                    transparent: true,
+                    opacity: 0.7
+                });
+                const researchMesh = new THREE.Mesh(researchGeometry, researchMaterial);
+                researchMesh.position.x = (Math.random() - 0.5) * 80;
+                researchMesh.position.y = (Math.random() - 0.5) * 80;
+                researchMesh.position.z = (Math.random() - 0.5) * 80;
+                researchMesh.userData = { 
+                    height: Math.random() * 3 + 2,
+                    heightVariation: Math.random() * 0.5 + 0.5,
+                    rotationSpeed: Math.random() * 0.02 + 0.01
+                };
+                researchGroup.add(researchMesh);
+            }
+            
+            // Business - Structured, organized elements
+            const businessGeometry = new THREE.PlaneGeometry(3, 3);
+            for (let i = 0; i < 10 * particleDensity; i++) {
+                const businessMaterial = new THREE.MeshPhongMaterial({
+                    color: 0xfd7e14,
+                    transparent: true,
+                    opacity: 0.5,
+                    side: THREE.DoubleSide
+                });
+                const businessMesh = new THREE.Mesh(businessGeometry, businessMaterial);
+                businessMesh.position.x = (Math.random() - 0.5) * 60;
+                businessMesh.position.y = (Math.random() - 0.5) * 60;
+                businessMesh.position.z = (Math.random() - 0.5) * 60;
+                businessMesh.rotation.x = Math.random() * Math.PI;
+                businessMesh.rotation.y = Math.random() * Math.PI;
+                businessMesh.userData = { 
+                    floatSpeed: Math.random() * 0.5 + 0.5,
+                    floatAmount: Math.random() * 0.5 + 0.5,
+                    rotationSpeed: Math.random() * 0.005 + 0.005
+                };
+                businessGroup.add(businessMesh);
+            }
+            
+            // DNA Double Helix
+            createDNAHelix();
+            
+            // Add lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+            
+            const pointLight = new THREE.PointLight(0xffffff, 0.5);
+            pointLight.position.set(25, 25, 25);
+            scene.add(pointLight);
+            
+            // Mouse move listener
+            document.addEventListener('mousemove', onDocumentMouseMove);
+            
+            // Background settings listeners
+            document.getElementById('animationSpeed').addEventListener('input', function(e) {
+                animationSpeed = parseFloat(e.target.value);
+            });
+            
+            document.getElementById('particleDensity').addEventListener('input', function(e) {
+                particleDensity = parseFloat(e.target.value);
+                // In a real implementation, we would regenerate the particles here
+            });
+            
+            document.getElementById('mouseSensitivity').addEventListener('input', function(e) {
+                mouseSensitivity = parseFloat(e.target.value);
+            });
+            
+            document.getElementById('glowEffect').addEventListener('change', function(e) {
+                glowEffect = e.target.checked;
+                // In a real implementation, we would toggle the glow effect here
+            });
+            
+            document.getElementById('interactionEffect').addEventListener('change', function(e) {
+                interactionEffect = e.target.checked;
+            });
+            
+            document.getElementById('dnaEffect').addEventListener('change', function(e) {
+                dnaEffect = e.target.checked;
+                if (dnaGroup) {
+                    dnaGroup.visible = dnaEffect;
+                }
+            });
+            
+            animate();
+        }
+        
+        function createDNAHelix() {
+            // Create the DNA double helix structure
+            const helixHeight = 40;
+            const helixRadius = 8;
+            const segments = 50;
+            const sphereRadius = 0.4;
+            const connectionRadius = 0.15;
+            
+            // Create materials
+            const strandMaterial = new THREE.MeshPhongMaterial({
+                color: 0x00a8ff,
+                transparent: true,
+                opacity: 0.8,
+                emissive: 0x00a8ff,
+                emissiveIntensity: 0.2
+            });
+            
+            const connectionMaterial = new THREE.MeshPhongMaterial({
+                color: 0xff4e8a,
+                transparent: true,
+                opacity: 0.7
+            });
+            
+            // Create the two strands of the DNA
+            const strand1Points = [];
+            const strand2Points = [];
+            
+            for (let i = 0; i <= segments; i++) {
+                const t = i / segments;
+                const angle = t * Math.PI * 4;
+                const y = (t - 0.5) * helixHeight;
+                
+                // First strand
+                const x1 = Math.cos(angle) * helixRadius;
+                const z1 = Math.sin(angle) * helixRadius;
+                strand1Points.push(new THREE.Vector3(x1, y, z1));
+                
+                // Second strand (opposite side)
+                const x2 = Math.cos(angle + Math.PI) * helixRadius;
+                const z2 = Math.sin(angle + Math.PI) * helixRadius;
+                strand2Points.push(new THREE.Vector3(x2, y, z2));
+            }
+            
+            // Create spheres for the base pairs
+            for (let i = 0; i <= segments; i++) {
+                // First strand
+                const sphere1 = new THREE.Mesh(
+                    new THREE.SphereGeometry(sphereRadius, 8, 8),
+                    strandMaterial
+                );
+                sphere1.position.copy(strand1Points[i]);
+                sphere1.userData = { 
+                    originalPosition: strand1Points[i].clone(),
+                    wobbleSpeed: Math.random() * 0.5 + 0.5,
+                    wobbleAmount: Math.random() * 0.2 + 0.1
+                };
+                dnaGroup.add(sphere1);
+                
+                // Second strand
+                const sphere2 = new THREE.Mesh(
+                    new THREE.SphereGeometry(sphereRadius, 8, 8),
+                    strandMaterial
+                );
+                sphere2.position.copy(strand2Points[i]);
+                sphere2.userData = { 
+                    originalPosition: strand2Points[i].clone(),
+                    wobbleSpeed: Math.random() * 0.5 + 0.5,
+                    wobbleAmount: Math.random() * 0.2 + 0.1
+                };
+                dnaGroup.add(sphere2);
+                
+                // Create connections between strands (base pairs)
+                if (i < segments) {
+                    const connectionGeometry = new THREE.CylinderGeometry(
+                        connectionRadius, 
+                        connectionRadius, 
+                        strand1Points[i].distanceTo(strand2Points[i]), 
+                        8
+                    );
+                    
+                    const connection = new THREE.Mesh(connectionGeometry, connectionMaterial);
+                    
+                    // Position the cylinder between the two points
+                    const midpoint = new THREE.Vector3().addVectors(strand1Points[i], strand2Points[i]).multiplyScalar(0.5);
+                    connection.position.copy(midpoint);
+                    
+                    // Orient the cylinder to point from strand1 to strand2
+                    connection.lookAt(strand2Points[i]);
+                    connection.rotateX(Math.PI / 2);
+                    
+                    connection.userData = { 
+                        pulseSpeed: Math.random() * 0.05 + 0.05,
+                        pulsePhase: Math.random() * Math.PI * 2
+                    };
+                    dnaGroup.add(connection);
+                }
+            }
+            
+            // Position the DNA helix in the scene
+            dnaGroup.position.set(0, 0, -20);
+            dnaGroup.rotation.z = Math.PI / 6; // Slight tilt for better visual effect
+        }
+        
+        function onDocumentMouseMove(event) {
+            if (interactionEffect) {
+                mouseX = (event.clientX - windowHalfX) / 100;
+                mouseY = (event.clientY - windowHalfY) / 100;
+            }
+        }
+        
+        function animate() {
+            requestAnimationFrame(animate);
+            
+            const time = Date.now() * 0.0005 * animationSpeed;
+            
+            // Innovation - Dynamic evolution
+            innovationGroup.children.forEach((mesh) => {
+                if (mesh.userData.rotationSpeed) {
+                    mesh.rotation.x += mesh.userData.rotationSpeed.x * animationSpeed;
+                    mesh.rotation.y += mesh.userData.rotationSpeed.y * animationSpeed;
+                }
+                if (mesh.userData.scaleSpeed) {
+                    const scale = 1 + Math.sin(time * mesh.userData.scaleSpeed + mesh.userData.scalePhase) * 0.3;
+                    mesh.scale.set(scale, scale, scale);
+                }
+            });
+            
+            // Hope - Upward movement
+            hopeGroup.children.forEach((mesh) => {
+                mesh.position.y += mesh.userData.speed * animationSpeed;
+                if (mesh.position.y > 50) {
+                    mesh.position.y = -50;
+                }
+                mesh.position.x += Math.sin(time * mesh.userData.wobbleSpeed + mesh.position.y) * mesh.userData.wobbleAmount * animationSpeed;
+            });
+            
+            // Talent - Network pulsing
+            talentGroup.children.forEach((child, i) => {
+                if (child.type === 'Mesh' && child.userData.pulseSpeed) {
+                    const scale = 1 + Math.sin(time * child.userData.pulseSpeed + child.userData.pulsePhase) * 0.3;
+                    child.scale.set(scale, scale, scale);
+                }
+            });
+            
+            // Excellence - Precise rotation
+            excellenceGroup.children.forEach((mesh) => {
+                if (mesh.userData.rotationSpeed) {
+                    mesh.rotation.x += mesh.userData.rotationSpeed.x * animationSpeed;
+                    mesh.rotation.y += mesh.userData.rotationSpeed.y * animationSpeed;
+                    mesh.rotation.z += mesh.userData.rotationSpeed.z * animationSpeed;
+                }
+            });
+            
+            // Research - Data visualization
+            researchGroup.children.forEach((mesh) => {
+                if (mesh.userData.height) {
+                    mesh.scale.y = mesh.userData.height + Math.sin(time * 3 * animationSpeed) * mesh.userData.heightVariation;
+                    mesh.rotation.y += mesh.userData.rotationSpeed * animationSpeed;
+                }
+            });
+            
+            // Business - Organized movement
+            businessGroup.children.forEach((mesh) => {
+                if (mesh.userData.floatSpeed) {
+                    mesh.position.y += Math.sin(time * mesh.userData.floatSpeed + mesh.position.x) * mesh.userData.floatAmount * animationSpeed;
+                    mesh.rotation.z += mesh.userData.rotationSpeed * animationSpeed;
+                }
+            });
+            
+            // DNA Double Helix - Rotation and pulsing
+            if (dnaEffect && dnaGroup) {
+                dnaGroup.rotation.y += 0.005 * animationSpeed;
+                
+                // Animate the DNA spheres with a subtle wobble
+                dnaGroup.children.forEach((child) => {
+                    if (child.userData.originalPosition && child.userData.wobbleSpeed) {
+                        const wobble = Math.sin(time * child.userData.wobbleSpeed) * child.userData.wobbleAmount;
+                        child.position.x = child.userData.originalPosition.x + wobble;
+                        child.position.z = child.userData.originalPosition.z + wobble;
+                    }
+                    
+                    // Pulse the connections
+                    if (child.userData.pulseSpeed) {
+                        const pulse = 1 + Math.sin(time * child.userData.pulseSpeed + child.userData.pulsePhase) * 0.2;
+                        child.scale.set(pulse, 1, pulse);
+                    }
+                });
+            }
+            
+            // Mouse interaction
+            if (interactionEffect) {
+                innovationGroup.rotation.x += mouseY * 0.001 * mouseSensitivity;
+                innovationGroup.rotation.y += mouseX * 0.001 * mouseSensitivity;
+                
+                hopeGroup.rotation.x += mouseY * 0.0005 * mouseSensitivity;
+                hopeGroup.rotation.y += mouseX * 0.0005 * mouseSensitivity;
+                
+                if (dnaEffect && dnaGroup) {
+                    dnaGroup.rotation.x += mouseY * 0.0003 * mouseSensitivity;
+                }
+            }
+            
+            // Update colors based on theme
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            const colors = isDark ? {
+                innovation: 0x0066ff,
+                hope: 0x00ffc8,
+                talent: 0xff6b35,
+                excellence: 0x8338ec,
+                research: 0x20c997,
+                business: 0xfd7e14,
+                dnaStrand: 0x00a8ff,
+                dnaConnection: 0xff4e8a
+            } : {
+                innovation: 0x004499,
+                hope: 0x00cc8a,
+                talent: 0xcc5529,
+                excellence: 0x6629b3,
+                research: 0x199966,
+                business: 0xcc6611,
+                dnaStrand: 0x0077cc,
+                dnaConnection: 0xcc3366
+            };
+            
+            renderer.render(scene, camera);
+        }
+        
+        // Update Three.js colors when theme changes
+        function updateThreeJSTheme() {
+            const isDark = document.body.getAttribute('data-theme') === 'dark';
+            const colors = isDark ? {
+                innovation: 0x0066ff,
+                hope: 0x00ffc8,
+                talent: 0xff6b35,
+                excellence: 0x8338ec,
+                research: 0x20c997,
+                business: 0xfd7e14,
+                dnaStrand: 0x00a8ff,
+                dnaConnection: 0xff4e8a
+            } : {
+                innovation: 0x004499,
+                hope: 0x00cc8a,
+                talent: 0xcc5529,
+                excellence: 0x6629b3,
+                research: 0x199966,
+                business: 0xcc6611,
+                dnaStrand: 0x0077cc,
+                dnaConnection: 0xcc3366
+            };
+            
+            if (innovationGroup) {
+                innovationGroup.children.forEach(child => {
+                    if (child.material) child.material.color.setHex(colors.innovation);
+                });
+            }
+            
+            if (hopeGroup) {
+                hopeGroup.children.forEach(child => {
+                    if (child.material) {
+                        child.material.color.setHex(colors.hope);
+                        child.material.emissive.setHex(colors.hope);
+                    }
+                });
+            }
+            
+            if (talentGroup) {
+                talentGroup.children.forEach(child => {
+                    if (child.material && child.type === 'Mesh') {
+                        child.material.color.setHex(colors.talent);
+                    } else if (child.material) {
+                        child.material.color.setHex(colors.talent);
+                    }
+                });
+            }
+            
+            if (excellenceGroup) {
+                excellenceGroup.children.forEach(child => {
+                    if (child.material) child.material.color.setHex(colors.excellence);
+                });
+            }
+            
+            if (researchGroup) {
+                researchGroup.children.forEach(child => {
+                    if (child.material) child.material.color.setHex(colors.research);
+                });
+            }
+            
+            if (businessGroup) {
+                businessGroup.children.forEach(child => {
+                    if (child.material) child.material.color.setHex(colors.business);
+                });
+            }
+            
+            if (dnaGroup) {
+                dnaGroup.children.forEach(child => {
+                    if (child.material) {
+                        // Check if it's a strand or connection
+                        if (child.geometry.type === 'SphereGeometry') {
+                            child.material.color.setHex(colors.dnaStrand);
+                            child.material.emissive.setHex(colors.dnaStrand);
+                        } else if (child.geometry.type === 'CylinderGeometry') {
+                            child.material.color.setHex(colors.dnaConnection);
+                        }
+                    }
+                });
+            }
+        }
+        
+        // Override toggleTheme to update Three.js colors
+        const originalToggleTheme = toggleTheme;
+        toggleTheme = function() {
+            originalToggleTheme();
+            setTimeout(updateThreeJSTheme, 100);
+        };
+        
+        // Startup data
+        const startupData = [
+            {
+                name: "TechFlow AI",
+                industry: "ai",
+                stage: "seed",
+                description: "AI-powered workflow automation for enterprises",
+                funding: "£2.5M",
+                employees: "15-20",
+                founded: "2023",
+                favorite: false
+            },
+            {
+                name: "GreenTech Solutions",
+                industry: "proptech",
+                stage: "pre-seed",
+                description: "Sustainable building technology and energy optimization",
+                funding: "£500K",
+                employees: "5-10",
+                founded: "2024",
+                favorite: false
+            },
+            {
+                name: "HealthTracker",
+                industry: "healthtech",
+                stage: "series-a",
+                description: "Personal health monitoring and wellness platform",
+                funding: "£5M",
+                employees: "25-50",
+                founded: "2022",
+                favorite: false
+            },
+            {
+                name: "EdLearn Platform",
+                industry: "edtech",
+                stage: "seed",
+                description: "Interactive learning platform for K-12 education",
+                funding: "£1.8M",
+                employees: "12-15",
+                founded: "2023",
+                favorite: false
+            },
+            {
+                name: "FinanceFlow",
+                industry: "fintech",
+                stage: "growth",
+                description: "SME lending and cash flow management solutions",
+                funding: "£8M",
+                employees: "40-60",
+                founded: "2021",
+                favorite: false
+            },
+            {
+                name: "RetailBot",
+                industry: "retail",
+                stage: "pre-seed",
+                description: "AI-powered inventory management for retail chains",
+                funding: "£300K",
+                employees: "3-5",
+                founded: "2024",
+                favorite: false
+            }
+        ];
+        
+        // Initialize startup directory
+        function displayStartups(startups = startupData) {
+            const grid = document.getElementById('startupGrid');
+            grid.innerHTML = '';
+            
+            startups.forEach((startup, index) => {
+                const card = document.createElement('div');
+                card.className = 'startup-card';
+                card.innerHTML = `
+                    <button class="favorite-btn ${startup.favorite ? 'active' : ''}" onclick="toggleFavorite(${index})">
+                        <i class="fas fa-heart"></i>
+                    </button>
+                    <div class="startup-header">
+                        <div class="startup-logo">${startup.name.charAt(0)}</div>
+                        <div class="startup-info">
+                            <h3>${startup.name}</h3>
+                            <div class="startup-meta">
+                                <span class="startup-tag">${startup.industry.toUpperCase()}</span>
+                                <span class="startup-tag">${startup.stage.toUpperCase()}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <p class="startup-description">${startup.description}</p>
+                    <div class="startup-stats">
+                        <div class="startup-stat">
+                            <span class="startup-stat-value">${startup.funding}</span>
+                            <span class="startup-stat-label">Funding</span>
+                        </div>
+                        <div class="startup-stat">
+                            <span class="startup-stat-value">${startup.employees}</span>
+                            <span class="startup-stat-label">Employees</span>
+                        </div>
+                        <div class="startup-stat">
+                            <span class="startup-stat-value">${startup.founded}</span>
+                            <span class="startup-stat-label">Founded</span>
+                        </div>
+                    </div>
+                    <div style="margin-top: 1.5rem;">
+                        <button class="btn btn-primary" style="width: 100%;">View Profile</button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+        
+        function toggleFavorite(index) {
+            startupData[index].favorite = !startupData[index].favorite;
+            displayStartups();
+        }
+        
+        function setView(view) {
+            const viewBtns = document.querySelectorAll('.view-btn');
+            viewBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.closest('.view-btn').classList.add('active');
+            
+            // In a real implementation, this would change the view between grid and list
+            showNotification(`Switched to ${view} view`);
+        }
+        
+        function sortStartups() {
+            const sortBy = document.getElementById('sortSelect').value;
+            let sortedStartups = [...startupData];
+            
+            switch(sortBy) {
+                case 'name':
+                    sortedStartups.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'funding':
+                    sortedStartups.sort((a, b) => {
+                        const aFunding = parseFloat(a.funding.replace(/[^0-9.]/g, ''));
+                        const bFunding = parseFloat(b.funding.replace(/[^0-9.]/g, ''));
+                        return bFunding - aFunding;
+                    });
+                    break;
+                case 'employees':
+                    sortedStartups.sort((a, b) => {
+                        const aEmployees = parseInt(a.employees.replace(/[^0-9]/g, ''));
+                        const bEmployees = parseInt(b.employees.replace(/[^0-9]/g, ''));
+                        return bEmployees - aEmployees;
+                    });
+                    break;
+                case 'founded':
+                    sortedStartups.sort((a, b) => b.founded - a.founded);
+                    break;
+            }
+            
+            displayStartups(sortedStartups);
+        }
+        
+        function searchStartups() {
+            const searchTerm = document.getElementById('startupSearch').value.toLowerCase();
+            const industryFilter = document.getElementById('industryFilter').value;
+            const stageFilter = document.getElementById('stageFilter').value;
+            
+            const filteredStartups = startupData.filter(startup => {
+                const matchesSearch = startup.name.toLowerCase().includes(searchTerm) || 
+                                    startup.description.toLowerCase().includes(searchTerm);
+                const matchesIndustry = !industryFilter || startup.industry === industryFilter;
+                const matchesStage = !stageFilter || startup.stage === stageFilter;
+                
+                return matchesSearch && matchesIndustry && matchesStage;
+            });
+            
+            displayStartups(filteredStartups);
+        }
+        
+        // Resource Library
+        function filterResources(category) {
+            const categoryBtns = document.querySelectorAll('.category-btn');
+            categoryBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const resourceCards = document.querySelectorAll('.resource-card');
+            resourceCards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Dashboard Tabs
+        function showTab(tabName) {
+            const tabs = document.querySelectorAll('.dashboard-tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => content.classList.remove('active'));
+            document.getElementById(tabName).classList.add('active');
+            
+            // Initialize charts when tab is shown
+            if (tabName === 'overview' && !window.overviewChartInitialized) {
+                initOverviewCharts();
+                window.overviewChartInitialized = true;
+            } else if (tabName === 'funding' && !window.fundingChartInitialized) {
+                initFundingCharts();
+                window.fundingChartInitialized = true;
+            } else if (tabName === 'growth' && !window.growthChartInitialized) {
+                initGrowthCharts();
+                window.growthChartInitialized = true;
+            } else if (tabName === 'comparison' && !window.comparisonChartInitialized) {
+                initComparisonCharts();
+                window.comparisonChartInitialized = true;
+            }
+        }
+        
+        // Initialize Overview Charts
+        function initOverviewCharts() {
+            // Startups by Industry Chart
+            const industryCtx = document.getElementById('startupsByIndustryChart').getContext('2d');
+            new Chart(industryCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['FinTech', 'HealthTech', 'EdTech', 'PropTech', 'Retail Tech', 'AI/ML', 'Other'],
+                    datasets: [{
+                        data: [25, 20, 15, 12, 10, 12, 6],
+                        backgroundColor: [
+                            'rgba(0, 102, 255, 0.7)',
+                            'rgba(0, 255, 200, 0.7)',
+                            'rgba(255, 107, 53, 0.7)',
+                            'rgba(131, 56, 236, 0.7)',
+                            'rgba(32, 201, 151, 0.7)',
+                            'rgba(253, 126, 20, 0.7)',
+                            'rgba(108, 117, 125, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 102, 255, 1)',
+                            'rgba(0, 255, 200, 1)',
+                            'rgba(255, 107, 53, 1)',
+                            'rgba(131, 56, 236, 1)',
+                            'rgba(32, 201, 151, 1)',
+                            'rgba(253, 126, 20, 1)',
+                            'rgba(108, 117, 125, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'right',
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Startups by Industry',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                            font: {
+                                size: 16
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize Funding Charts
+        function initFundingCharts() {
+            // Funding Trends Chart
+            const fundingTrendsCtx = document.getElementById('fundingTrendsChart').getContext('2d');
+            new Chart(fundingTrendsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{
+                        label: 'Total Funding (£M)',
+                        data: [12, 18, 25, 32, 40, 45],
+                        borderColor: 'rgba(0, 102, 255, 1)',
+                        backgroundColor: 'rgba(0, 102, 255, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Funding Trends (2020-2025)',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Funding by Stage Chart
+            const fundingByStageCtx = document.getElementById('fundingByStageChart').getContext('2d');
+            new Chart(fundingByStageCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Pre-seed', 'Seed', 'Series A', 'Series B', 'Growth'],
+                    datasets: [{
+                        label: 'Average Funding (£M)',
+                        data: [0.2, 1.5, 5, 12, 25],
+                        backgroundColor: [
+                            'rgba(0, 255, 200, 0.7)',
+                            'rgba(0, 102, 255, 0.7)',
+                            'rgba(131, 56, 236, 0.7)',
+                            'rgba(255, 107, 53, 0.7)',
+                            'rgba(32, 201, 151, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(0, 255, 200, 1)',
+                            'rgba(0, 102, 255, 1)',
+                            'rgba(131, 56, 236, 1)',
+                            'rgba(255, 107, 53, 1)',
+                            'rgba(32, 201, 151, 1)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Average Funding by Stage',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize Growth Charts
+        function initGrowthCharts() {
+            // Growth Metrics Chart
+            const growthMetricsCtx = document.getElementById('growthMetricsChart').getContext('2d');
+            new Chart(growthMetricsCtx, {
+                type: 'radar',
+                data: {
+                    labels: [
+                        'Startups',
+                        'Funding',
+                        'Jobs',
+                        'Patents',
+                        'Exits',
+                        'Univ. Collab'
+                    ],
+                    datasets: [{
+                        label: '2020',
+                        data: [60, 12, 800, 25, 2, 15],
+                        fill: true,
+                        backgroundColor: 'rgba(0, 102, 255, 0.2)',
+                        borderColor: 'rgba(0, 102, 255, 0.7)',
+                        pointBackgroundColor: 'rgba(0, 102, 255, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(0, 102, 255, 1)'
+                    }, {
+                        label: '2025',
+                        data: [150, 45, 2400, 85, 8, 42],
+                        fill: true,
+                        backgroundColor: 'rgba(0, 255, 200, 0.2)',
+                        borderColor: 'rgba(0, 255, 200, 0.7)',
+                        pointBackgroundColor: 'rgba(0, 255, 200, 1)',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: 'rgba(0, 255, 200, 1)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    elements: {
+                        line: {
+                            borderWidth: 3
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Ecosystem Growth Comparison',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        r: {
+                            angleLines: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            },
+                            pointLabels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary'),
+                                backdropColor: 'transparent'
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Job Growth Chart
+            const jobGrowthCtx = document.getElementById('jobGrowthChart').getContext('2d');
+            new Chart(jobGrowthCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['2020', '2021', '2022', '2023', '2024', '2025'],
+                    datasets: [{
+                        label: 'Jobs Created',
+                        data: [800, 1100, 1400, 1700, 2000, 2400],
+                        backgroundColor: 'rgba(0, 255, 200, 0.7)',
+                        borderColor: 'rgba(0, 255, 200, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Job Growth in Startups',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Initialize Comparison Charts
+        function initComparisonCharts() {
+            // City Comparison Chart
+            const cityComparisonCtx = document.getElementById('cityComparisonChart').getContext('2d');
+            new Chart(cityComparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['London', 'Manchester', 'Bristol', 'Birmingham', 'Nottingham', 'Leeds'],
+                    datasets: [{
+                        label: 'Number of Startups',
+                        data: [4500, 1200, 800, 650, 150, 350],
+                        backgroundColor: 'rgba(0, 102, 255, 0.7)',
+                        borderColor: 'rgba(0, 102, 255, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'Funding (£M)',
+                        data: [15000, 3200, 2100, 1800, 45, 950],
+                        backgroundColor: 'rgba(0, 255, 200, 0.7)',
+                        borderColor: 'rgba(0, 255, 200, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'City Comparison',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        }
+                    }
+                }
+            });
+            
+            // Industry Comparison Chart
+            const industryComparisonCtx = document.getElementById('industryComparisonChart').getContext('2d');
+            new Chart(industryComparisonCtx, {
+                type: 'horizontalBar',
+                data: {
+                    labels: ['FinTech', 'HealthTech', 'EdTech', 'PropTech', 'Retail Tech', 'AI/ML'],
+                    datasets: [{
+                        label: 'Nottingham',
+                        data: [25, 20, 15, 12, 10, 12],
+                        backgroundColor: 'rgba(0, 102, 255, 0.7)',
+                        borderColor: 'rgba(0, 102, 255, 1)',
+                        borderWidth: 1
+                    }, {
+                        label: 'UK Average',
+                        data: [22, 18, 12, 8, 14, 15],
+                        backgroundColor: 'rgba(0, 255, 200, 0.7)',
+                        borderColor: 'rgba(0, 255, 200, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Industry Distribution Comparison (%)',
+                            color: getComputedStyle(document.documentElement).getPropertyValue('--text-primary'),
+                            font: {
+                                size: 16
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            beginAtZero: true,
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--text-secondary')
+                            },
+                            grid: {
+                                color: getComputedStyle(document.documentElement).getPropertyValue('--card-border')
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Calendar Functions
+        let currentMonth = new Date();
+        let calendarView = 'list';
+        
+        function changeMonth(direction) {
+            currentMonth.setMonth(currentMonth.getMonth() + direction);
+            updateCalendarDisplay();
+            if (calendarView === 'calendar') {
+                generateCalendar();
+            }
+        }
+        
+        function updateCalendarDisplay() {
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            document.getElementById('currentMonth').textContent = 
+                `${monthNames[currentMonth.getMonth()]} ${currentMonth.getFullYear()}`;
+        }
+        
+        function setCalendarView(view) {
+            calendarView = view;
+            const viewBtns = document.querySelectorAll('.view-toggle-btn');
+            viewBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const calendarGrid = document.getElementById('calendarGrid');
+            const eventsList = document.getElementById('eventsList');
+            
+            if (view === 'calendar') {
+                calendarGrid.classList.add('active');
+                eventsList.classList.add('hidden');
+                generateCalendar();
+            } else {
+                calendarGrid.classList.remove('active');
+                eventsList.classList.remove('hidden');
+            }
+        }
+        
+        function generateCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            calendarGrid.innerHTML = '';
+            
+            // Add day headers
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const headerCell = document.createElement('div');
+                headerCell.className = 'calendar-header';
+                headerCell.textContent = day;
+                calendarGrid.appendChild(headerCell);
+            });
+            
+            // Get first day of month and number of days
+            const firstDay = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+            const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
+            
+            // Add empty cells for days before the first day of the month
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day other-month';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            // Add cells for each day of the month
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                
+                // Check if this day is today
+                if (currentMonth.getFullYear() === today.getFullYear() && 
+                    currentMonth.getMonth() === today.getMonth() && 
+                    day === today.getDate()) {
+                    dayCell.classList.add('today');
+                }
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+                
+                // Add sample events for specific days
+                if (day === 15) {
+                    const event = document.createElement('div');
+                    event.className = 'day-event';
+                    event.textContent = 'Tech Meetup';
+                    dayCell.appendChild(event);
+                }
+                
+                if (day === 22) {
+                    const event = document.createElement('div');
+                    event.className = 'day-event';
+                    event.textContent = 'Pitch Night';
+                    dayCell.appendChild(event);
+                }
+                
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+        
+        function filterEvents(type) {
+            const filterBtns = document.querySelectorAll('.event-filter');
+            filterBtns.forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            const eventCards = document.querySelectorAll('.event-card');
+            eventCards.forEach(card => {
+                if (type === 'all' || card.dataset.type === type) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        
+        // Job Board Functions
+        function filterJobs() {
+            const typeFilter = document.getElementById('jobTypeFilter').value;
+            const industryFilter = document.getElementById('jobIndustryFilter').value;
+            const experienceFilter = document.getElementById('jobExperienceFilter').value;
+            
+            // In a real implementation, this would filter the job listings
+            showNotification('Jobs filtered successfully');
+        }
+        
+        // Modal functions
+        function openModal(modalId) {
+            document.getElementById(modalId).style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Form submissions
+        document.getElementById('joinForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Thank you for your interest! We\'ll review your application and get back to you within 48 hours.');
+            closeModal('joinModal');
+            this.reset();
+        });
+        
+        document.getElementById('partnerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Partnership request submitted! Our team will contact you to discuss collaboration opportunities.');
+            closeModal('partnerModal');
+            this.reset();
+        });
+        
+        document.getElementById('jobForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Job posting submitted! It will be reviewed and published within 24 hours.');
+            closeModal('jobModal');
+            this.reset();
+        });
+        
+        document.getElementById('reportForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Report download link has been sent to your email. Check your inbox in a few minutes.');
+            closeModal('reportModal');
+            this.reset();
+        });
+        
+        document.getElementById('jobAlertForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Job alert set up successfully! You\'ll receive notifications based on your preferences.');
+            closeModal('jobAlertModal');
+            this.reset();
+        });
+        
+        document.getElementById('newsletterForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Thank you for subscribing to our newsletter!');
+            this.reset();
+        });
+        
+        // Notification function
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.classList.add('show');
+            
+            setTimeout(() => {
+                notification.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Smooth scrolling
+        function scrollToSection(sectionId) {
+            document.getElementById(sectionId).scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+        
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modals = document.querySelectorAll('.modal');
+            modals.forEach(modal => {
+                if (event.target === modal) {
+                    closeModal(modal.id);
+                }
+            });
+        });
+        
+        // Add smooth scrolling to nav links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Animate metrics on scroll
+        function animateMetrics() {
+            const metrics = document.querySelectorAll('.metric-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const target = entry.target;
+                        const text = target.textContent;
+                        const number = parseInt(text.replace(/[^0-9]/g, ''));
+                        let current = 0;
+                        const increment = number / 50;
+                        
+                        const timer = setInterval(() => {
+                            current += increment;
+                            if (current >= number) {
+                                current = number;
+                                clearInterval(timer);
+                            }
+                            target.textContent = text.replace(number.toString(), Math.floor(current).toString());
+                        }, 30);
+                        
+                        observer.unobserve(target);
+                    }
+                });
+            });
+            
+            metrics.forEach(metric => observer.observe(metric));
+        }
+        
+        // Fade in animation on scroll
+        function observeElements() {
+            const elements = document.querySelectorAll('.fade-in');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, { threshold: 0.1 });
+            
+            elements.forEach(element => {
+                observer.observe(element);
+            });
+        }
+        
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.display = 'none';
+            } else {
+                navLinks.style.display = 'flex';
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.right = '0';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.backgroundColor = 'var(--navbar-bg)';
+                navLinks.style.padding = '1rem';
+                navLinks.style.borderTop = '1px solid var(--card-border)';
+            }
+        });
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            initThreeJS();
+            displayStartups();
+            animateMetrics();
+            observeElements();
+            updateCalendarDisplay();
+        });
+        
+        // Handle window resize
+        window.addEventListener('resize', function() {
+            if (renderer) {
+                camera.aspect = window.innerWidth / window.innerHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                windowHalfX = window.innerWidth / 2;
+                windowHalfY = window.innerHeight / 2;
+            }
+        });
+    </script>
+</body>
+</html>
