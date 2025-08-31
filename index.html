@@ -2767,6 +2767,9 @@
                 themeIcon.className = 'fas fa-sun';
                 localStorage.setItem('theme', 'dark');
             }
+            
+            // Update Three.js colors when theme changes
+            updateThreeJSTheme();
         }
         
         // Load saved theme
@@ -2788,7 +2791,7 @@
         
         // Three.js Background Animation
         let scene, camera, renderer;
-        let innovationGroup, hopeGroup, talentGroup, excellenceGroup, researchGroup, businessGroup, dnaGroup;
+        let innovationGroup, hopeGroup, talentGroup, excellenceGroup, researchGroup, businessGroup, dnaGroup, particleField;
         let mouseX = 0, mouseY = 0;
         let windowHalfX = window.innerWidth / 2;
         let windowHalfY = window.innerHeight / 2;
@@ -2798,7 +2801,9 @@
         let glowEffect = true;
         let interactionEffect = true;
         let dnaEffect = true;
-        let composer, renderPass, unrealPass;
+        let bloomPass, composer;
+        let targetCameraX = 0, targetCameraY = 0, targetCameraZ = 50;
+        let currentCameraX = 0, currentCameraY = 0, currentCameraZ = 50;
         
         function initThreeJS() {
             scene = new THREE.Scene();
@@ -2821,6 +2826,7 @@
             researchGroup = new THREE.Group();
             businessGroup = new THREE.Group();
             dnaGroup = new THREE.Group();
+            particleField = new THREE.Group();
             
             scene.add(innovationGroup);
             scene.add(hopeGroup);
@@ -2829,6 +2835,7 @@
             scene.add(researchGroup);
             scene.add(businessGroup);
             scene.add(dnaGroup);
+            scene.add(particleField);
             
             // Innovation - Dynamic, evolving shapes
             const innovationGeometry = new THREE.IcosahedronGeometry(1, 1);
@@ -2837,7 +2844,9 @@
                     color: 0x0066ff,
                     transparent: true,
                     opacity: 0.6,
-                    wireframe: true
+                    wireframe: true,
+                    emissive: 0x0066ff,
+                    emissiveIntensity: 0.2
                 });
                 const innovationMesh = new THREE.Mesh(innovationGeometry, innovationMaterial);
                 innovationMesh.position.x = (Math.random() - 0.5) * 80;
@@ -2850,7 +2859,8 @@
                         y: Math.random() * 0.02
                     },
                     scaleSpeed: Math.random() * 0.5 + 0.5,
-                    scalePhase: Math.random() * Math.PI * 2
+                    scalePhase: Math.random() * Math.PI * 2,
+                    originalScale: innovationMesh.scale.clone()
                 };
                 innovationGroup.add(innovationMesh);
             }
@@ -2863,7 +2873,7 @@
                     transparent: true,
                     opacity: 0.8,
                     emissive: 0x00ffc8,
-                    emissiveIntensity: 0.2
+                    emissiveIntensity: 0.3
                 });
                 const hopeMesh = new THREE.Mesh(hopeGeometry, hopeMaterial);
                 hopeMesh.position.x = (Math.random() - 0.5) * 100;
@@ -2872,7 +2882,8 @@
                 hopeMesh.userData = { 
                     speed: Math.random() * 0.5 + 0.2,
                     wobbleAmount: Math.random() * 0.2 + 0.1,
-                    wobbleSpeed: Math.random() * 0.5 + 0.5
+                    wobbleSpeed: Math.random() * 0.5 + 0.5,
+                    originalPosition: hopeMesh.position.clone()
                 };
                 hopeGroup.add(hopeMesh);
             }
@@ -2884,7 +2895,9 @@
                 const talentMaterial = new THREE.MeshPhongMaterial({
                     color: 0xff6b35,
                     transparent: true,
-                    opacity: 0.8
+                    opacity: 0.8,
+                    emissive: 0xff6b35,
+                    emissiveIntensity: 0.2
                 });
                 const talentMesh = new THREE.Mesh(talentGeometry, talentMaterial);
                 talentMesh.position.x = (Math.random() - 0.5) * 60;
@@ -2892,7 +2905,8 @@
                 talentMesh.position.z = (Math.random() - 0.5) * 60;
                 talentMesh.userData = { 
                     pulseSpeed: Math.random() * 0.05 + 0.05,
-                    pulsePhase: Math.random() * Math.PI * 2
+                    pulsePhase: Math.random() * Math.PI * 2,
+                    originalPosition: talentMesh.position.clone()
                 };
                 talentNodes.push(talentMesh);
                 talentGroup.add(talentMesh);
@@ -2925,7 +2939,9 @@
                     color: 0x8338ec,
                     transparent: true,
                     opacity: 0.6,
-                    wireframe: true
+                    wireframe: true,
+                    emissive: 0x8338ec,
+                    emissiveIntensity: 0.2
                 });
                 const excellenceMesh = new THREE.Mesh(excellenceGeometry, excellenceMaterial);
                 excellenceMesh.position.x = (Math.random() - 0.5) * 70;
@@ -2938,7 +2954,8 @@
                         x: Math.random() * 0.01,
                         y: Math.random() * 0.01,
                         z: Math.random() * 0.01
-                    }
+                    },
+                    originalRotation: excellenceMesh.rotation.clone()
                 };
                 excellenceGroup.add(excellenceMesh);
             }
@@ -2949,7 +2966,9 @@
                 const researchMaterial = new THREE.MeshPhongMaterial({
                     color: 0x20c997,
                     transparent: true,
-                    opacity: 0.7
+                    opacity: 0.7,
+                    emissive: 0x20c997,
+                    emissiveIntensity: 0.2
                 });
                 const researchMesh = new THREE.Mesh(researchGeometry, researchMaterial);
                 researchMesh.position.x = (Math.random() - 0.5) * 80;
@@ -2958,7 +2977,8 @@
                 researchMesh.userData = { 
                     height: Math.random() * 3 + 2,
                     heightVariation: Math.random() * 0.5 + 0.5,
-                    rotationSpeed: Math.random() * 0.02 + 0.01
+                    rotationSpeed: Math.random() * 0.02 + 0.01,
+                    originalHeight: researchMesh.scale.y
                 };
                 researchGroup.add(researchMesh);
             }
@@ -2970,7 +2990,9 @@
                     color: 0xfd7e14,
                     transparent: true,
                     opacity: 0.5,
-                    side: THREE.DoubleSide
+                    side: THREE.DoubleSide,
+                    emissive: 0xfd7e14,
+                    emissiveIntensity: 0.1
                 });
                 const businessMesh = new THREE.Mesh(businessGeometry, businessMaterial);
                 businessMesh.position.x = (Math.random() - 0.5) * 60;
@@ -2981,13 +3003,17 @@
                 businessMesh.userData = { 
                     floatSpeed: Math.random() * 0.5 + 0.5,
                     floatAmount: Math.random() * 0.5 + 0.5,
-                    rotationSpeed: Math.random() * 0.005 + 0.005
+                    rotationSpeed: Math.random() * 0.005 + 0.005,
+                    originalPosition: businessMesh.position.clone()
                 };
                 businessGroup.add(businessMesh);
             }
             
             // DNA Double Helix
             createDNAHelix();
+            
+            // Particle Field - Connecting all elements
+            createParticleField();
             
             // Add lights
             const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
@@ -2996,6 +3022,11 @@
             const pointLight = new THREE.PointLight(0xffffff, 0.5);
             pointLight.position.set(25, 25, 25);
             scene.add(pointLight);
+            
+            // Add a second point light for more dynamic lighting
+            const pointLight2 = new THREE.PointLight(0x00ffc8, 0.3);
+            pointLight2.position.set(-25, -25, 25);
+            scene.add(pointLight2);
             
             // Mouse move listener
             document.addEventListener('mousemove', onDocumentMouseMove);
@@ -3047,13 +3078,15 @@
                 transparent: true,
                 opacity: 0.8,
                 emissive: 0x00a8ff,
-                emissiveIntensity: 0.2
+                emissiveIntensity: 0.3
             });
             
             const connectionMaterial = new THREE.MeshPhongMaterial({
                 color: 0xff4e8a,
                 transparent: true,
-                opacity: 0.7
+                opacity: 0.7,
+                emissive: 0xff4e8a,
+                emissiveIntensity: 0.2
             });
             
             // Create the two strands of the DNA
@@ -3136,10 +3169,81 @@
             dnaGroup.rotation.z = Math.PI / 6; // Slight tilt for better visual effect
         }
         
+        function createParticleField() {
+            // Create a field of small particles that connects all the elements
+            const particleGeometry = new THREE.BufferGeometry();
+            const particleCount = 500 * particleDensity;
+            const positions = new Float32Array(particleCount * 3);
+            const colors = new Float32Array(particleCount * 3);
+            
+            for (let i = 0; i < particleCount; i++) {
+                const i3 = i * 3;
+                
+                // Position
+                positions[i3] = (Math.random() - 0.5) * 100;
+                positions[i3 + 1] = (Math.random() - 0.5) * 100;
+                positions[i3 + 2] = (Math.random() - 0.5) * 100;
+                
+                // Color - mix between all the theme colors
+                const colorChoice = Math.random();
+                if (colorChoice < 0.2) {
+                    // Innovation blue
+                    colors[i3] = 0;
+                    colors[i3 + 1] = 102 / 255;
+                    colors[i3 + 2] = 1;
+                } else if (colorChoice < 0.4) {
+                    // Hope cyan
+                    colors[i3] = 0;
+                    colors[i3 + 1] = 1;
+                    colors[i3 + 2] = 200 / 255;
+                } else if (colorChoice < 0.6) {
+                    // Talent orange
+                    colors[i3] = 1;
+                    colors[i3 + 1] = 107 / 255;
+                    colors[i3 + 2] = 53 / 255;
+                } else if (colorChoice < 0.8) {
+                    // Excellence purple
+                    colors[i3] = 131 / 255;
+                    colors[i3 + 1] = 56 / 255;
+                    colors[i3 + 2] = 236 / 255;
+                } else {
+                    // Research green
+                    colors[i3] = 32 / 255;
+                    colors[i3 + 1] = 201 / 255;
+                    colors[i3 + 2] = 151 / 255;
+                }
+            }
+            
+            particleGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+            particleGeometry.setAttribute('color', new THREE.BufferAttribute(colors, 3));
+            
+            const particleMaterial = new THREE.PointsMaterial({
+                size: 0.5,
+                vertexColors: true,
+                transparent: true,
+                opacity: 0.6,
+                blending: THREE.AdditiveBlending
+            });
+            
+            const particles = new THREE.Points(particleGeometry, particleMaterial);
+            particleField.add(particles);
+            
+            // Store reference for animation
+            particleField.userData = { 
+                positions: positions,
+                particleCount: particleCount,
+                originalPositions: positions.slice()
+            };
+        }
+        
         function onDocumentMouseMove(event) {
             if (interactionEffect) {
                 mouseX = (event.clientX - windowHalfX) / 100;
                 mouseY = (event.clientY - windowHalfY) / 100;
+                
+                // Update target camera position based on mouse movement
+                targetCameraX = mouseX * 5;
+                targetCameraY = -mouseY * 5;
             }
         }
         
@@ -3147,6 +3251,14 @@
             requestAnimationFrame(animate);
             
             const time = Date.now() * 0.0005 * animationSpeed;
+            
+            // Smooth camera movement
+            currentCameraX += (targetCameraX - currentCameraX) * 0.05;
+            currentCameraY += (targetCameraY - currentCameraY) * 0.05;
+            
+            camera.position.x = currentCameraX;
+            camera.position.y = currentCameraY;
+            camera.lookAt(scene.position);
             
             // Innovation - Dynamic evolution
             innovationGroup.children.forEach((mesh) => {
@@ -3156,7 +3268,7 @@
                 }
                 if (mesh.userData.scaleSpeed) {
                     const scale = 1 + Math.sin(time * mesh.userData.scaleSpeed + mesh.userData.scalePhase) * 0.3;
-                    mesh.scale.set(scale, scale, scale);
+                    mesh.scale.copy(mesh.userData.originalScale).multiplyScalar(scale);
                 }
             });
             
@@ -3174,6 +3286,12 @@
                 if (child.type === 'Mesh' && child.userData.pulseSpeed) {
                     const scale = 1 + Math.sin(time * child.userData.pulseSpeed + child.userData.pulsePhase) * 0.3;
                     child.scale.set(scale, scale, scale);
+                    
+                    // Add subtle position movement
+                    if (child.userData.originalPosition) {
+                        child.position.x = child.userData.originalPosition.x + Math.sin(time * 0.5 + i) * 0.5;
+                        child.position.y = child.userData.originalPosition.y + Math.cos(time * 0.5 + i) * 0.5;
+                    }
                 }
             });
             
@@ -3222,7 +3340,26 @@
                 });
             }
             
-            // Mouse interaction
+            // Particle Field - Subtle movement
+            if (particleField && particleField.children[0]) {
+                const particles = particleField.children[0];
+                const positions = particles.geometry.attributes.position.array;
+                const originalPositions = particleField.userData.originalPositions;
+                
+                for (let i = 0; i < positions.length; i += 3) {
+                    // Add subtle wave motion to particles
+                    positions[i] = originalPositions[i] + Math.sin(time + i * 0.01) * 0.5;
+                    positions[i + 1] = originalPositions[i + 1] + Math.cos(time + i * 0.01) * 0.5;
+                    positions[i + 2] = originalPositions[i + 2] + Math.sin(time * 0.5 + i * 0.01) * 0.5;
+                }
+                
+                particles.geometry.attributes.position.needsUpdate = true;
+                
+                // Rotate the entire particle field slowly
+                particleField.rotation.y += 0.0005 * animationSpeed;
+            }
+            
+            // Mouse interaction with groups
             if (interactionEffect) {
                 innovationGroup.rotation.x += mouseY * 0.001 * mouseSensitivity;
                 innovationGroup.rotation.y += mouseX * 0.001 * mouseSensitivity;
@@ -3234,28 +3371,6 @@
                     dnaGroup.rotation.x += mouseY * 0.0003 * mouseSensitivity;
                 }
             }
-            
-            // Update colors based on theme
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            const colors = isDark ? {
-                innovation: 0x0066ff,
-                hope: 0x00ffc8,
-                talent: 0xff6b35,
-                excellence: 0x8338ec,
-                research: 0x20c997,
-                business: 0xfd7e14,
-                dnaStrand: 0x00a8ff,
-                dnaConnection: 0xff4e8a
-            } : {
-                innovation: 0x004499,
-                hope: 0x00cc8a,
-                talent: 0xcc5529,
-                excellence: 0x6629b3,
-                research: 0x199966,
-                business: 0xcc6611,
-                dnaStrand: 0x0077cc,
-                dnaConnection: 0xcc3366
-            };
             
             renderer.render(scene, camera);
         }
@@ -3285,7 +3400,10 @@
             
             if (innovationGroup) {
                 innovationGroup.children.forEach(child => {
-                    if (child.material) child.material.color.setHex(colors.innovation);
+                    if (child.material) {
+                        child.material.color.setHex(colors.innovation);
+                        child.material.emissive.setHex(colors.innovation);
+                    }
                 });
             }
             
@@ -3302,6 +3420,7 @@
                 talentGroup.children.forEach(child => {
                     if (child.material && child.type === 'Mesh') {
                         child.material.color.setHex(colors.talent);
+                        child.material.emissive.setHex(colors.talent);
                     } else if (child.material) {
                         child.material.color.setHex(colors.talent);
                     }
@@ -3310,19 +3429,28 @@
             
             if (excellenceGroup) {
                 excellenceGroup.children.forEach(child => {
-                    if (child.material) child.material.color.setHex(colors.excellence);
+                    if (child.material) {
+                        child.material.color.setHex(colors.excellence);
+                        child.material.emissive.setHex(colors.excellence);
+                    }
                 });
             }
             
             if (researchGroup) {
                 researchGroup.children.forEach(child => {
-                    if (child.material) child.material.color.setHex(colors.research);
+                    if (child.material) {
+                        child.material.color.setHex(colors.research);
+                        child.material.emissive.setHex(colors.research);
+                    }
                 });
             }
             
             if (businessGroup) {
                 businessGroup.children.forEach(child => {
-                    if (child.material) child.material.color.setHex(colors.business);
+                    if (child.material) {
+                        child.material.color.setHex(colors.business);
+                        child.material.emissive.setHex(colors.business);
+                    }
                 });
             }
             
@@ -3335,18 +3463,50 @@
                             child.material.emissive.setHex(colors.dnaStrand);
                         } else if (child.geometry.type === 'CylinderGeometry') {
                             child.material.color.setHex(colors.dnaConnection);
+                            child.material.emissive.setHex(colors.dnaConnection);
                         }
                     }
                 });
             }
+            
+            // Update particle field colors
+            if (particleField && particleField.children[0]) {
+                const particles = particleField.children[0];
+                const colorsArray = particles.geometry.attributes.color.array;
+                
+                for (let i = 0; i < colorsArray.length; i += 3) {
+                    const colorChoice = Math.random();
+                    if (colorChoice < 0.2) {
+                        // Innovation blue
+                        colorsArray[i] = colors.innovation / 255;
+                        colorsArray[i + 1] = (colors.innovation >> 8 & 0xff) / 255;
+                        colorsArray[i + 2] = (colors.innovation >> 16 & 0xff) / 255;
+                    } else if (colorChoice < 0.4) {
+                        // Hope cyan
+                        colorsArray[i] = colors.hope / 255;
+                        colorsArray[i + 1] = (colors.hope >> 8 & 0xff) / 255;
+                        colorsArray[i + 2] = (colors.hope >> 16 & 0xff) / 255;
+                    } else if (colorChoice < 0.6) {
+                        // Talent orange
+                        colorsArray[i] = colors.talent / 255;
+                        colorsArray[i + 1] = (colors.talent >> 8 & 0xff) / 255;
+                        colorsArray[i + 2] = (colors.talent >> 16 & 0xff) / 255;
+                    } else if (colorChoice < 0.8) {
+                        // Excellence purple
+                        colorsArray[i] = colors.excellence / 255;
+                        colorsArray[i + 1] = (colors.excellence >> 8 & 0xff) / 255;
+                        colorsArray[i + 2] = (colors.excellence >> 16 & 0xff) / 255;
+                    } else {
+                        // Research green
+                        colorsArray[i] = colors.research / 255;
+                        colorsArray[i + 1] = (colors.research >> 8 & 0xff) / 255;
+                        colorsArray[i + 2] = (colors.research >> 16 & 0xff) / 255;
+                    }
+                }
+                
+                particles.geometry.attributes.color.needsUpdate = true;
+            }
         }
-        
-        // Override toggleTheme to update Three.js colors
-        const originalToggleTheme = toggleTheme;
-        toggleTheme = function() {
-            originalToggleTheme();
-            setTimeout(updateThreeJSTheme, 100);
-        };
         
         // Startup data
         const startupData = [
