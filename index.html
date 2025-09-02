@@ -268,10 +268,11 @@
             font-weight: 600;
             text-decoration: none;
             transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
         }
         .nav-cta:hover {
             transform: translateY(-3px);
-            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.3); /* Changed to green */
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.4);
         }
         .mobile-menu {
             display: none;
@@ -350,6 +351,7 @@
         .btn-primary {
             background: var(--gradient-1);
             color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.3);
         }
         .btn-secondary {
             background: transparent;
@@ -358,7 +360,21 @@
         }
         .btn:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.3); /* Changed to green */
+            box-shadow: 0 15px 30px rgba(0, 255, 136, 0.4);
+        }
+        .btn-primary::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(-100%);
+            transition: transform 0.3s ease;
+        }
+        .btn-primary:hover::after {
+            transform: translateX(0);
         }
         /* Newsletter Signup */
         .newsletter {
@@ -447,6 +463,23 @@
             transition: all 0.4s ease;
             cursor: pointer;
             height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-1);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        .feature-card:hover::before {
+            opacity: 0.1;
         }
         .feature-card:hover {
             transform: translateY(-10px);
@@ -783,6 +816,182 @@
             color: var(--text-secondary);
             font-size: 0.95rem;
         }
+        .support-item .contact-info {
+            text-align: center;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+        }
+        /* Business Startup Resources */
+        .business-resources {
+            margin: 2rem 0;
+        }
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+        .resource-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+            transition: all 0.4s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+        .resource-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); /* Changed to green */
+        }
+        .resource-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        .resource-card h3 {
+            font-size: 1.6rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+        .resource-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            flex-grow: 1;
+        }
+        .resource-card .btn {
+            align-self: flex-start;
+        }
+        /* Free Consultation */
+        .consultation-section {
+            background: linear-gradient(135deg, rgba(0, 255, 136, 0.05), rgba(0, 102, 255, 0.05)); /* Changed to green */
+            border-radius: 25px;
+            padding: 3rem;
+            margin: 2rem 0;
+            border: 1px solid rgba(0, 255, 136, 0.2); /* Changed to green */
+        }
+        .consultation-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+        .consultation-info h3 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+        }
+        .consultation-benefits {
+            margin-bottom: 2rem;
+        }
+        .benefit-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+        .benefit-item i {
+            color: var(--secondary-color);
+            margin-right: 1rem;
+            margin-top: 0.3rem;
+        }
+        .consultation-form {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+        }
+        .consultation-form h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        /* Pricing Table */
+        .pricing-section {
+            margin: 2rem 0;
+        }
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2rem;
+        }
+        .pricing-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--card-border);
+            transition: all 0.4s ease;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 255, 136, 0.15); /* Changed to green */
+        }
+        .pricing-card.featured {
+            border: 2px solid var(--secondary-color);
+            transform: scale(1.05);
+        }
+        .featured-badge {
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+        .pricing-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--secondary-color);
+            text-align: center;
+        }
+        .pricing-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+        .pricing-card p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            text-align: center;
+            flex-grow: 1;
+        }
+        .pricing-price {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+        .pricing-features {
+            margin-bottom: 2rem;
+        }
+        .pricing-feature {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 0.8rem;
+        }
+        .pricing-feature i {
+            color: var(--secondary-color);
+            margin-right: 0.8rem;
+            margin-top: 0.3rem;
+            font-size: 0.9rem;
+        }
+        .pricing-card .btn {
+            width: 100%;
+            margin-top: auto;
+        }
         /* Resource Library */
         .resource-library {
             background: var(--card-bg);
@@ -1072,6 +1281,11 @@
             min-height: 120px;
             padding: 0.5rem;
             position: relative;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .calendar-day:hover {
+            background: rgba(0, 255, 136, 0.05);
         }
         .calendar-day.other-month {
             color: var(--text-secondary);
@@ -1079,6 +1293,9 @@
         }
         .calendar-day.today {
             background: rgba(0, 255, 136, 0.1); /* Changed to green */
+        }
+        .calendar-day.has-event {
+            border-left: 3px solid var(--secondary-color);
         }
         .day-number {
             font-weight: 600;
@@ -1095,6 +1312,11 @@
             overflow: hidden;
             text-overflow: ellipsis;
             cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .day-event:hover {
+            transform: scale(1.05);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
         .events-list {
             display: block;
@@ -1109,9 +1331,11 @@
             margin-bottom: 1rem;
             border-left: 4px solid var(--secondary-color);
             transition: all 0.3s ease;
+            cursor: pointer;
         }
         .event-card:hover {
             transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.15);
         }
         .event-date {
             color: var(--secondary-color);
@@ -1149,6 +1373,66 @@
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 500;
+        }
+        /* Event Detail Modal */
+        .event-detail-modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+        }
+        .event-detail-content {
+            background: var(--card-bg);
+            margin: 5% auto;
+            padding: 3rem;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            backdrop-filter: blur(20px);
+            border: 1px solid var(--card-border);
+            position: relative;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .event-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+        .event-detail-title {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+        }
+        .event-detail-meta {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            margin-bottom: 1.5rem;
+        }
+        .event-detail-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--text-secondary);
+        }
+        .event-detail-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+        .event-detail-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            flex-wrap: wrap;
         }
         /* Job Board */
         .job-board {
@@ -1203,6 +1487,7 @@
         }
         .job-card:hover {
             transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 255, 136, 0.15);
         }
         .job-info h3 {
             font-size: 1.4rem;
@@ -1273,6 +1558,12 @@
             padding: 1rem;
             margin-bottom: 1rem;
             border: 1px solid var(--card-border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .forum-preview:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.1);
         }
         .forum-preview h4 {
             font-size: 1.1rem;
@@ -1304,6 +1595,8 @@
         }
         .mentor-item:hover {
             border-color: var(--secondary-color);
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.1);
         }
         .mentor-avatar {
             width: 30px;
@@ -1440,6 +1733,7 @@
             color: var(--secondary-color);
             margin-bottom: 2rem;
             font-size: 2rem;
+            text-align: center;
         }
         .form-group {
             margin-bottom: 1.5rem;
@@ -1497,6 +1791,29 @@
             transform: translateY(0);
             opacity: 1;
         }
+        /* Floating CTA Button */
+        .floating-cta {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: var(--gradient-1);
+            color: var(--primary-color);
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.4);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            z-index: 999;
+        }
+        .floating-cta:hover {
+            transform: scale(1.1);
+            box-shadow: 0 8px 25px rgba(0, 255, 136, 0.6);
+        }
         /* Responsive */
         @media (max-width: 992px) {
             .hero h1 {
@@ -1513,6 +1830,10 @@
             
             .chart-container {
                 height: 300px;
+            }
+            
+            .consultation-content {
+                grid-template-columns: 1fr;
             }
         }
         @media (max-width: 768px) {
@@ -1567,6 +1888,14 @@
             .form-row {
                 flex-direction: column;
             }
+            
+            .event-detail-header {
+                flex-direction: column;
+            }
+            
+            .event-detail-actions {
+                flex-direction: column;
+            }
         }
         @media (max-width: 576px) {
             .hero h1 {
@@ -1579,7 +1908,9 @@
             
             .features-grid,
             .support-grid,
-            .community-grid {
+            .community-grid,
+            .resources-grid,
+            .pricing-grid {
                 grid-template-columns: 1fr;
             }
             
@@ -1599,6 +1930,12 @@
             .day-event {
                 font-size: 0.6rem;
             }
+            
+            .floating-cta {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
         }
         /* Animations */
         .fade-in {
@@ -1609,6 +1946,22 @@
         .fade-in.visible {
             opacity: 1;
             transform: translateY(0);
+        }
+        
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(0, 255, 136, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(0, 255, 136, 0);
+            }
         }
     </style>
 </head>
@@ -1672,7 +2025,9 @@
                 <li><a href="#stories">Success Stories</a></li>
                 <li><a href="#directory">Directory</a></li>
                 <li><a href="#support">Support</a></li>
-                <li><a href="#resources">Resources</a></li>
+                <li><a href="#resources">Business Resources</a></li>
+                <li><a href="#consultation">Free Consultation</a></li>
+                <li><a href="#pricing">Expert Support</a></li>
                 <li><a href="#dashboard">Dashboard</a></li>
                 <li><a href="#events">Events</a></li>
                 <li><a href="#jobs">Jobs</a></li>
@@ -1695,7 +2050,7 @@
             <p>Discover innovative startups, connect with resources, and be part of a thriving community that's positioning Nottingham as a globally recognized startup hub.</p>
             <div class="cta-buttons">
                 <a href="#directory" class="btn btn-primary">Explore Startups</a>
-                <a href="#" class="btn btn-secondary" onclick="openModal('joinModal')">Join Platform</a>
+                <a href="#consultation" class="btn btn-secondary">Book Free Consultation</a>
             </div>
         </div>
     </section>
@@ -1917,15 +2272,26 @@
                         <h3>📈 Funding Opportunities</h3>
                         <div class="support-item">
                             <h4>D2N2 Growth Hub</h4>
-                            <p>Local enterprise support and funding guidance</p>
+                            <p>Local enterprise support and funding guidance for startups in Derby, Derbyshire, Nottingham and Nottinghamshire.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> info@d2n2growthhub.co.uk<br>
+                                <i class="fas fa-phone"></i> 0333 006 9178
+                            </div>
                         </div>
                         <div class="support-item">
                             <h4>Nottingham Business Ventures</h4>
-                            <p>Angel investment and mentorship programs</p>
+                            <p>Angel investment and mentorship programs for early-stage businesses.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> hello@nbv.co.uk<br>
+                                <i class="fas fa-phone"></i> 0115 970 5550
+                            </div>
                         </div>
                         <div class="support-item">
-                            <h4>UK Government Grants</h4>
-                            <p>Innovate UK, SEIS, EIS schemes</p>
+                            <h4>Start-Up Loans</h4>
+                            <p>Government-backed personal loans for business purposes of up to £25,000.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-globe"></i> www.startuploans.co.uk
+                            </div>
                         </div>
                         <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Explore Funding</a>
                     </div>
@@ -1934,15 +2300,27 @@
                         <h3>🏢 Incubators & Accelerators</h3>
                         <div class="support-item">
                             <h4>NTU Student Enterprise</h4>
-                            <p>University-backed startup incubation</p>
+                            <p>University-backed startup incubation for students and graduates.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> student.enterprise@ntu.ac.uk<br>
+                                <i class="fas fa-phone"></i> 0115 848 6269
+                            </div>
                         </div>
                         <div class="support-item">
                             <h4>University of Nottingham Innovation Park</h4>
-                            <p>Research-focused startup support</p>
+                            <p>Research-focused startup support and lab facilities for science and tech businesses.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> info@uonip.com<br>
+                                <i class="fas fa-phone"></i> 0115 748 4800
+                            </div>
                         </div>
                         <div class="support-item">
                             <h4>Hatch Enterprise</h4>
-                            <p>Social enterprise acceleration</p>
+                            <p>Social enterprise acceleration and support for purpose-driven businesses.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> nottingham@hatchenterprise.org.uk<br>
+                                <i class="fas fa-phone"></i> 020 3858 4040
+                            </div>
                         </div>
                         <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Find Programs</a>
                     </div>
@@ -1951,15 +2329,27 @@
                         <h3>👥 Mentorship & Networks</h3>
                         <div class="support-item">
                             <h4>Tech Nottingham</h4>
-                            <p>Monthly meetups and networking events</p>
+                            <p>Monthly meetups and networking events for the tech community.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-globe"></i> www.technottingham.com<br>
+                                <i class="fab fa-twitter"></i> @technottingham
+                            </div>
                         </div>
                         <div class="support-item">
                             <h4>Nottingham Entrepreneurs Network</h4>
-                            <p>Peer-to-peer learning community</p>
+                            <p>Peer-to-peer learning community for local business owners and founders.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> info@nottinghamentrepreneurs.co.uk<br>
+                                <i class="fab fa-linkedin"></i> /groups/nottingham-entrepreneurs
+                            </div>
                         </div>
                         <div class="support-item">
-                            <h4>Industry Expert Mentors</h4>
-                            <p>One-on-one guidance from successful founders</p>
+                            <h4>Zest Innovation</h4>
+                            <p>Business lead generation and growth strategy support for small businesses.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> hello@zestinnovation.net<br>
+                                <i class="fas fa-phone"></i> 07872 590796
+                            </div>
                         </div>
                         <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Connect Now</a>
                     </div>
@@ -1967,16 +2357,28 @@
                     <div class="support-card fade-in">
                         <h3>🎓 Education & Training</h3>
                         <div class="support-item">
-                            <h4>Startup Bootcamps</h4>
-                            <p>Intensive entrepreneurship training</p>
+                            <h4>First Enterprise</h4>
+                            <p>FREE, impartial and confidential one-to-one support for pre-start and existing businesses.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> info@first-enterprise.co.uk<br>
+                                <i class="fas fa-phone"></i> 0115 975 6363
+                            </div>
                         </div>
                         <div class="support-item">
-                            <h4>Digital Marketing Workshops</h4>
-                            <p>Growth hacking and customer acquisition</p>
+                            <h4>Prince's Trust</h4>
+                            <p>Support for young people aged 18-30 to start their own business.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> eastmids@princes-trust.org.uk<br>
+                                <i class="fas fa-phone"></i> 0800 842 842
+                            </div>
                         </div>
                         <div class="support-item">
-                            <h4>Legal & Finance Seminars</h4>
-                            <p>Compliance and funding guidance</p>
+                            <h4>Young Enterprise</h4>
+                            <p>Supporting young people to build business skills and entrepreneurial mindset.</p>
+                            <div class="contact-info">
+                                <i class="fas fa-envelope"></i> info@young-enterprise.org.uk<br>
+                                <i class="fas fa-phone"></i> 01865 776 845
+                            </div>
                         </div>
                         <a href="#" class="btn btn-secondary" style="margin-top: 1rem;">Learn More</a>
                     </div>
@@ -1985,8 +2387,386 @@
         </div>
     </section>
     
-    <!-- Resource Library Section -->
+    <!-- Business Startup Resources Section -->
     <section id="resources" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Business Startup Resources</h2>
+                <p class="section-subtitle">All key subjects explained in simple English with local support and free resources</p>
+            </div>
+            
+            <div class="business-resources">
+                <div class="resources-grid">
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3>Before You Start</h3>
+                        <p>Understand the reality of running a business, assess if entrepreneurship is right for you, and evaluate your circumstances and support network.</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-file-pdf"></i> Download: Personal Survival Budget Template
+                        </p>
+                        <a href="#" class="btn btn-secondary" onclick="openModal('expertModal')">Get Expert Advice</a>
+                    </div>
+                    
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3>Planning Your Business</h3>
+                        <p>Learn how to give yourself the best chance of success with market research, business planning, and understanding your target audience.</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-file-pdf"></i> Download: Business Plan Template
+                        </p>
+                        <a href="#" class="btn btn-secondary" onclick="openModal('expertModal')">Get Expert Advice</a>
+                    </div>
+                    
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">
+                            <i class="fas fa-cogs"></i>
+                        </div>
+                        <h3>Practical Considerations</h3>
+                        <p>Choose the right business structure, name, location, and understand legal requirements, insurance, and intellectual property protection.</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-file-pdf"></i> Download: Business Structure Guide
+                        </p>
+                        <a href="#" class="btn btn-secondary" onclick="openModal('expertModal')">Get Expert Advice</a>
+                    </div>
+                    
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">
+                            <i class="fas fa-pound-sign"></i>
+                        </div>
+                        <h3>Funding Options</h3>
+                        <p>Explore various funding sources including start-up loans, grants, investors, and government-backed financing options for your business.</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-file-pdf"></i> Download: Funding Sources Guide
+                        </p>
+                        <a href="#" class="btn btn-secondary" onclick="openModal('expertModal')">Get Expert Advice</a>
+                    </div>
+                    
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3>Tax & Accountancy</h3>
+                        <p>Navigate tax obligations, National Insurance, VAT registration, and bookkeeping requirements for your business structure.</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-file-pdf"></i> Download: Tax Guide for Startups
+                        </p>
+                        <a href="#" class="btn btn-secondary" onclick="openModal('expertModal')">Get Expert Advice</a>
+                    </div>
+                    
+                    <div class="resource-card fade-in">
+                        <div class="resource-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Finding Customers</h3>
+                        <p>Develop effective marketing strategies, understand your unique selling proposition, and learn how to win and retain customers.</p>
+                        <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--text-secondary);">
+                            <i class="fas fa-file-pdf"></i> Download: Marketing Plan Template
+                        </p>
+                        <a href="#" class="btn btn-secondary" onclick="openModal('expertModal')">Get Expert Advice</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Free Consultation Section -->
+    <section id="consultation" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Free Consultation</h2>
+                <p class="section-subtitle">Book a 30-minute consultation with our business experts</p>
+            </div>
+            
+            <div class="consultation-section fade-in">
+                <div class="consultation-content">
+                    <div class="consultation-info">
+                        <h3>Get Expert Guidance for Your Business Journey</h3>
+                        <div class="consultation-benefits">
+                            <div class="benefit-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <h4>Personalized Advice</h4>
+                                    <p>Tailored guidance based on your specific business idea and stage</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <h4>Resource Guidance</h4>
+                                    <p>Learn about local support organizations and funding opportunities</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <h4>Actionable Steps</h4>
+                                    <p>Leave with clear next steps to move your business forward</p>
+                                </div>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-check-circle"></i>
+                                <div>
+                                    <h4>No Obligation</h4>
+                                    <p>Completely free consultation with no commitment required</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="consultation-form">
+                        <h3>Book Your Free Consultation</h3>
+                        <form id="consultationForm">
+                            <div class="form-group">
+                                <label for="consultName">Full Name *</label>
+                                <input type="text" id="consultName" name="consultName" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="consultEmail">Email Address *</label>
+                                <input type="email" id="consultEmail" name="consultEmail" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="consultPhone">Phone Number</label>
+                                <input type="tel" id="consultPhone" name="consultPhone">
+                            </div>
+                            <div class="form-group">
+                                <label for="consultIdea">Business Idea/Stage</label>
+                                <textarea id="consultIdea" name="consultIdea" rows="3" placeholder="Briefly describe your business idea or current stage..."></textarea>
+                            </div>
+                            <div class="form-group">
+                                <label for="consultExpertise">Area of Expertise Needed</label>
+                                <select id="consultExpertise" name="consultExpertise">
+                                    <option value="">Select an area</option>
+                                    <option value="validation">Business Idea Validation</option>
+                                    <option value="planning">Business Planning</option>
+                                    <option value="funding">Funding Strategy</option>
+                                    <option value="financial">Financial & Tax Planning</option>
+                                    <option value="marketing">Marketing & Sales Strategy</option>
+                                    <option value="general">General Business Support</option>
+                                </select>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="consultDate">Preferred Date</label>
+                                    <input type="date" id="consultDate" name="consultDate">
+                                </div>
+                                <div class="form-group">
+                                    <label for="consultTime">Preferred Time</label>
+                                    <select id="consultTime" name="consultTime">
+                                        <option value="">Select a time</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-primary" style="width: 100%;">Book Consultation</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Expert Support Pricing Section -->
+    <section id="pricing" class="section">
+        <div class="container">
+            <div class="section-header fade-in">
+                <h2 class="section-title">Expert Support Pricing</h2>
+                <p class="section-subtitle">Affordable expert guidance for every stage of your business journey</p>
+            </div>
+            
+            <div class="pricing-section">
+                <div class="pricing-grid">
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-icon">
+                            <i class="fas fa-lightbulb"></i>
+                        </div>
+                        <h3>Business Idea Validation</h3>
+                        <p>Get expert feedback on your business concept and market potential</p>
+                        <div class="pricing-price">£75/hour</div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Market analysis</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Competitor research</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Idea feasibility assessment</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Recommendations for next steps</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openModal('pricingModal', 'Business Idea Validation')">Book Session</button>
+                    </div>
+                    
+                    <div class="pricing-card featured fade-in">
+                        <div class="featured-badge">Most Popular</div>
+                        <div class="pricing-icon">
+                            <i class="fas fa-clipboard-list"></i>
+                        </div>
+                        <h3>Business Planning Package</h3>
+                        <p>Comprehensive business plan development with expert guidance</p>
+                        <div class="pricing-price">£650/package</div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Business plan template</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Financial projections</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Market research guidance</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>3 review sessions</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Investor pitch preparation</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-primary" onclick="openModal('pricingModal', 'Business Planning Package')">Subscribe</button>
+                    </div>
+                    
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-icon">
+                            <i class="fas fa-pound-sign"></i>
+                        </div>
+                        <h3>Funding Strategy</h3>
+                        <p>Expert guidance on securing the right funding for your business</p>
+                        <div class="pricing-price">£85/hour</div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Funding options assessment</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Investor targeting</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Pitch deck review</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Application support</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openModal('pricingModal', 'Funding Strategy')">Book Session</button>
+                    </div>
+                    
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-icon">
+                            <i class="fas fa-calculator"></i>
+                        </div>
+                        <h3>Financial & Tax Planning</h3>
+                        <p>Expert financial guidance to ensure your business stays compliant and profitable</p>
+                        <div class="pricing-price">£90/hour</div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Tax compliance guidance</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Financial forecasting</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Cash flow management</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Bookkeeping setup</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openModal('pricingModal', 'Financial & Tax Planning')">Book Session</button>
+                    </div>
+                    
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h3>Marketing & Sales Strategy</h3>
+                        <p>Develop effective strategies to attract and retain customers</p>
+                        <div class="pricing-price">£80/hour</div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Target audience analysis</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Marketing channel strategy</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Sales process development</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Brand positioning guidance</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openModal('pricingModal', 'Marketing & Sales Strategy')">Book Session</button>
+                    </div>
+                    
+                    <div class="pricing-card fade-in">
+                        <div class="pricing-icon">
+                            <i class="fas fa-hands-helping"></i>
+                        </div>
+                        <h3>Ongoing Business Support</h3>
+                        <p>Continuous expert support as your business grows and evolves</p>
+                        <div class="pricing-price">£300/month</div>
+                        <div class="pricing-features">
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Monthly strategy sessions</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Unlimited email support</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Quarterly business review</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Priority access to events</span>
+                            </div>
+                            <div class="pricing-feature">
+                                <i class="fas fa-check"></i>
+                                <span>Network introductions</span>
+                            </div>
+                        </div>
+                        <button class="btn btn-secondary" onclick="openModal('pricingModal', 'Ongoing Business Support')">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Resource Library Section -->
+    <section id="resource-library" class="section">
         <div class="container">
             <div class="section-header fade-in">
                 <h2 class="section-title">Resource Library</h2>
@@ -2011,6 +2791,7 @@
                             <span>PDF • 2.4MB</span>
                             <span class="download-btn">Download</span>
                         </div>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Expert Help</button>
                     </div>
                     
                     <div class="resource-card" data-category="templates">
@@ -2021,6 +2802,7 @@
                             <span>PPTX • 1.8MB</span>
                             <span class="download-btn">Download</span>
                         </div>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Expert Help</button>
                     </div>
                     
                     <div class="resource-card" data-category="tools">
@@ -2031,6 +2813,7 @@
                             <span>XLSX • 0.9MB</span>
                             <span class="download-btn">Download</span>
                         </div>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Expert Help</button>
                     </div>
                     
                     <div class="resource-card" data-category="guides">
@@ -2041,6 +2824,7 @@
                             <span>PDF • 1.2MB</span>
                             <span class="download-btn">Download</span>
                         </div>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Expert Help</button>
                     </div>
                     
                     <div class="resource-card" data-category="reports">
@@ -2051,6 +2835,7 @@
                             <span>PDF • 4.7MB</span>
                             <span class="download-btn">Download</span>
                         </div>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Expert Help</button>
                     </div>
                     
                     <div class="resource-card" data-category="templates">
@@ -2061,6 +2846,7 @@
                             <span>DOCX • 0.5MB</span>
                             <span class="download-btn">Download</span>
                         </div>
+                        <button class="btn btn-secondary" style="width: 100%; margin-top: 1rem;">Expert Help</button>
                     </div>
                 </div>
             </div>
@@ -2194,7 +2980,7 @@
                 </div>
                 
                 <div class="events-list" id="eventsList">
-                    <div class="event-card fade-in" data-type="meetup">
+                    <div class="event-card fade-in" data-type="meetup" data-event-id="1">
                         <div class="event-date">Sep 15, 2025</div>
                         <h3 class="event-title">Tech Nottingham Monthly Meetup</h3>
                         <p class="event-description">Join the community for networking, talks, and startup showcases. This month featuring AI in healthcare.</p>
@@ -2204,12 +2990,12 @@
                             </div>
                             <div>
                                 <span class="event-type">Meetup</span>
-                                <button class="btn btn-secondary" style="margin-left: 1rem;">Register</button>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="showEventDetail(1)">Register</button>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="event-card fade-in" data-type="pitch">
+                    <div class="event-card fade-in" data-type="pitch" data-event-id="2">
                         <div class="event-date">Sep 22, 2025</div>
                         <h3 class="event-title">Startup Pitch Night</h3>
                         <p class="event-description">Early-stage startups pitch to local investors and get feedback from successful entrepreneurs.</p>
@@ -2219,12 +3005,12 @@
                             </div>
                             <div>
                                 <span class="event-type">Pitch Event</span>
-                                <button class="btn btn-secondary" style="margin-left: 1rem;">Apply to Pitch</button>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="showEventDetail(2)">Apply to Pitch</button>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="event-card fade-in" data-type="workshop">
+                    <div class="event-card fade-in" data-type="workshop" data-event-id="3">
                         <div class="event-date">Oct 5, 2025</div>
                         <h3 class="event-title">FinTech Innovation Workshop</h3>
                         <p class="event-description">Deep dive into the latest fintech trends and regulatory landscape with industry experts.</p>
@@ -2234,12 +3020,12 @@
                             </div>
                             <div>
                                 <span class="event-type">Workshop</span>
-                                <button class="btn btn-secondary" style="margin-left: 1rem;">Book Now</button>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="showEventDetail(3)">Book Now</button>
                             </div>
                         </div>
                     </div>
                     
-                    <div class="event-card fade-in" data-type="meetup">
+                    <div class="event-card fade-in" data-type="meetup" data-event-id="4">
                         <div class="event-date">Oct 12, 2025</div>
                         <h3 class="event-title">Women in Tech Nottingham</h3>
                         <p class="event-description">Networking event supporting female entrepreneurs and tech professionals in the region.</p>
@@ -2249,7 +3035,7 @@
                             </div>
                             <div>
                                 <span class="event-type">Meetup</span>
-                                <button class="btn btn-secondary" style="margin-left: 1rem;">Join Event</button>
+                                <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="showEventDetail(4)">Join Event</button>
                             </div>
                         </div>
                     </div>
@@ -2499,6 +3285,8 @@
                 <a href="#">API Access</a>
                 <a href="#">Support</a>
                 <a href="#">Contact</a>
+                <a href="#consultation">Free Consultation</a>
+                <a href="#pricing">Expert Support</a>
             </div>
             <div class="social-icons">
                 <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
@@ -2510,6 +3298,11 @@
             <p class="ranking">Ranked #12 in UK, #226 Globally - StartupBlink 2025</p>
         </div>
     </footer>
+    
+    <!-- Floating CTA Button -->
+    <div class="floating-cta pulse" onclick="scrollToSection('consultation')">
+        <i class="fas fa-comments"></i>
+    </div>
     
     <!-- Modals -->
     <div id="joinModal" class="modal">
@@ -2749,10 +3542,141 @@
         </div>
     </div>
     
+    <div id="consultationModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('consultationModal')">&times;</span>
+            <h2>Consultation Booked Successfully</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Thank you for booking a consultation with our business experts. We've received your request and will contact you shortly to confirm your appointment.</p>
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="closeModal('consultationModal')">Close</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="expertModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('expertModal')">&times;</span>
+            <h2>Get Expert Advice</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Our team of business experts is ready to help you with personalized guidance for your startup journey. Book a free 30-minute consultation to discuss your specific needs.</p>
+            <div style="text-align: center;">
+                <button class="btn btn-primary" onclick="closeModal('expertModal'); scrollToSection('consultation')">Book Free Consultation</button>
+                <button class="btn btn-secondary" style="margin-left: 1rem;" onclick="closeModal('expertModal'); scrollToSection('pricing')">View Pricing Options</button>
+            </div>
+        </div>
+    </div>
+    
+    <div id="pricingModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal('pricingModal')">&times;</span>
+            <h2 id="pricingModalTitle">Book Expert Session</h2>
+            <p style="margin-bottom: 2rem; color: var(--text-secondary);">Please provide your details to book a session with our expert team.</p>
+            <form id="pricingForm">
+                <div class="form-group">
+                    <label for="pricingName">Full Name *</label>
+                    <input type="text" id="pricingName" name="pricingName" required>
+                </div>
+                <div class="form-group">
+                    <label for="pricingEmail">Email Address *</label>
+                    <input type="email" id="pricingEmail" name="pricingEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="pricingPhone">Phone Number</label>
+                    <input type="tel" id="pricingPhone" name="pricingPhone">
+                </div>
+                <div class="form-group">
+                    <label for="pricingService">Service *</label>
+                    <input type="text" id="pricingService" name="pricingService" readonly>
+                </div>
+                <div class="form-group">
+                    <label for="pricingMessage">Additional Information</label>
+                    <textarea id="pricingMessage" name="pricingMessage" rows="4" placeholder="Tell us more about your specific needs..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Submit Request</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Event Detail Modal -->
+    <div id="eventDetailModal" class="event-detail-modal">
+        <div class="event-detail-content">
+            <span class="close" onclick="closeEventDetail()">&times;</span>
+            <div class="event-detail-header">
+                <div>
+                    <h2 class="event-detail-title" id="eventDetailTitle">Event Title</h2>
+                    <div class="event-detail-meta">
+                        <div class="event-detail-meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span id="eventDetailDate">Date</span>
+                        </div>
+                        <div class="event-detail-meta-item">
+                            <i class="fas fa-clock"></i>
+                            <span id="eventDetailTime">Time</span>
+                        </div>
+                        <div class="event-detail-meta-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <span id="eventDetailLocation">Location</span>
+                        </div>
+                        <div class="event-detail-meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span id="eventDetailType">Event Type</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="event-detail-description" id="eventDetailDescription">
+                Event description will appear here...
+            </div>
+            <div class="event-detail-actions">
+                <button class="btn btn-primary" id="eventDetailActionBtn">Register Now</button>
+                <button class="btn btn-secondary" onclick="closeEventDetail()">Close</button>
+            </div>
+        </div>
+    </div>
+    
     <!-- Notification -->
     <div class="notification" id="notification"></div>
     
     <script>
+        // Event data
+        const eventData = {
+            1: {
+                title: "Tech Nottingham Monthly Meetup",
+                date: "Sep 15, 2025",
+                time: "18:00 - 21:00",
+                location: "Nottingham Conference Centre",
+                type: "Meetup",
+                description: "Join us for our monthly Tech Nottingham meetup! This month we're featuring talks on AI in healthcare, startup showcases, and plenty of networking opportunities. Whether you're a founder, developer, designer, or just interested in tech, you're welcome to join our community. Drinks and light refreshments will be provided.",
+                action: "Register"
+            },
+            2: {
+                title: "Startup Pitch Night",
+                date: "Sep 22, 2025",
+                time: "17:30 - 20:30",
+                location: "NTU Entrepreneurship Centre",
+                type: "Pitch Event",
+                description: "Watch early-stage startups pitch their ideas to a panel of local investors and successful entrepreneurs. Each startup gets 5 minutes to pitch followed by 5 minutes of Q&A. After the pitches, network with founders, investors, and mentors from the Nottingham startup ecosystem.",
+                action: "Apply to Pitch"
+            },
+            3: {
+                title: "FinTech Innovation Workshop",
+                date: "Oct 5, 2025",
+                time: "09:30 - 16:30",
+                location: "University of Nottingham Innovation Park",
+                type: "Workshop",
+                description: "A full-day workshop diving deep into the latest FinTech trends and regulatory landscape. Industry experts will share insights on blockchain, digital payments, open banking, and regulatory compliance. Perfect for FinTech founders, product managers, and anyone interested in the future of financial technology.",
+                action: "Book Now"
+            },
+            4: {
+                title: "Women in Tech Nottingham",
+                date: "Oct 12, 2025",
+                time: "18:00 - 20:30",
+                location: "Capital One UK Office",
+                type: "Meetup",
+                description: "Join our supportive community of women in tech for an evening of networking, inspiring talks, and career development discussions. This month's theme is 'Breaking Barriers: Women in Leadership'. All genders are welcome to attend and support diversity in the tech industry.",
+                action: "Join Event"
+            }
+        };
+        
         // Theme Toggle
         function toggleTheme() {
             const body = document.body;
@@ -4239,16 +5163,38 @@
                 
                 // Add sample events for specific days
                 if (day === 15) {
+                    dayCell.classList.add('has-event');
                     const event = document.createElement('div');
                     event.className = 'day-event';
                     event.textContent = 'Tech Meetup';
+                    event.onclick = () => showEventDetail(1);
                     dayCell.appendChild(event);
                 }
                 
                 if (day === 22) {
+                    dayCell.classList.add('has-event');
                     const event = document.createElement('div');
                     event.className = 'day-event';
                     event.textContent = 'Pitch Night';
+                    event.onclick = () => showEventDetail(2);
+                    dayCell.appendChild(event);
+                }
+                
+                if (day === 5 && currentMonth.getMonth() === 9) { // October 5th
+                    dayCell.classList.add('has-event');
+                    const event = document.createElement('div');
+                    event.className = 'day-event';
+                    event.textContent = 'FinTech Workshop';
+                    event.onclick = () => showEventDetail(3);
+                    dayCell.appendChild(event);
+                }
+                
+                if (day === 12 && currentMonth.getMonth() === 9) { // October 12th
+                    dayCell.classList.add('has-event');
+                    const event = document.createElement('div');
+                    event.className = 'day-event';
+                    event.textContent = 'Women in Tech';
+                    event.onclick = () => showEventDetail(4);
                     dayCell.appendChild(event);
                 }
                 
@@ -4271,6 +5217,28 @@
             });
         }
         
+        // Show event detail modal
+        function showEventDetail(eventId) {
+            const event = eventData[eventId];
+            if (!event) return;
+            
+            document.getElementById('eventDetailTitle').textContent = event.title;
+            document.getElementById('eventDetailDate').textContent = event.date;
+            document.getElementById('eventDetailTime').textContent = event.time;
+            document.getElementById('eventDetailLocation').textContent = event.location;
+            document.getElementById('eventDetailType').textContent = event.type;
+            document.getElementById('eventDetailDescription').textContent = event.description;
+            document.getElementById('eventDetailActionBtn').textContent = event.action;
+            
+            document.getElementById('eventDetailModal').style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeEventDetail() {
+            document.getElementById('eventDetailModal').style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
         // Job Board Functions
         function filterJobs() {
             const typeFilter = document.getElementById('jobTypeFilter').value;
@@ -4282,9 +5250,15 @@
         }
         
         // Modal functions
-        function openModal(modalId) {
+        function openModal(modalId, serviceType = '') {
             document.getElementById(modalId).style.display = 'block';
             document.body.style.overflow = 'hidden';
+            
+            // If opening pricing modal, set the service type
+            if (modalId === 'pricingModal' && serviceType) {
+                document.getElementById('pricingModalTitle').textContent = `Book ${serviceType}`;
+                document.getElementById('pricingService').value = serviceType;
+            }
         }
         
         function closeModal(modalId) {
@@ -4325,6 +5299,21 @@
             e.preventDefault();
             showNotification('Job alert set up successfully! You\'ll receive notifications based on your preferences.');
             closeModal('jobAlertModal');
+            this.reset();
+        });
+        
+        document.getElementById('consultationForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Consultation request submitted! We\'ll contact you shortly to confirm your appointment.');
+            closeModal('consultationModal');
+            openModal('consultationModal');
+            this.reset();
+        });
+        
+        document.getElementById('pricingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            showNotification('Your request has been submitted! We\'ll contact you shortly to arrange your session.');
+            closeModal('pricingModal');
             this.reset();
         });
         
@@ -4370,6 +5359,12 @@
                     closeModal(modal.id);
                 }
             });
+            
+            // Close event detail modal when clicking outside
+            const eventDetailModal = document.getElementById('eventDetailModal');
+            if (event.target === eventDetailModal) {
+                closeEventDetail();
+            }
         });
         
         // Add smooth scrolling to nav links
